@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tantrade - Made in Tanzania Gallery</title>
+    <meta name="description" content="Explore and celebrate products Made in Tanzania. View our gallery, register your products, and watch our documentary.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Header / Navbar -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo-section">
+                <div class="logo-box">
+                    <svg class="logo-icon" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="30" cy="30" r="28" fill="#0A7E4B" opacity="0.1"/>
+                        <path d="M15 35 L25 20 L30 28 L40 15 L45 35" stroke="#0A7E4B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M20 40 L40 40" stroke="#0A7E4B" stroke-width="3" stroke-linecap="round"/>
+                        <circle cx="30" cy="30" r="8" stroke="#1B4F8A" stroke-width="2.5" fill="none"/>
+                        <path d="M27 30 L29 32 L33 28" stroke="#0A7E4B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <div class="logo-text">
+                        <span class="logo-title">TANTRADE</span>
+                        <span class="logo-subtitle">Tanzania Trade Development Authority</span>
+                    </div>
+                </div>
+                <h1 class="page-title" data-en="Made in Tanzania Gallery" data-sw="Galeri ya Bidhaa za Tanzania">Made in Tanzania Gallery</h1>
+            </div>
+            <div class="lang-toggle">
+                <button class="lang-btn active" data-lang="en" onclick="setLanguage('en')">EN</button>
+                <button class="lang-btn" data-lang="sw" onclick="setLanguage('sw')">SW</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-card">
+            <div class="badge">
+                <div class="badge-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#0A7E4B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                        <polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>
+                </div>
+                <span class="badge-text" data-en="Official Made in Tanzania Portal" data-sw="Tovuti Rasmi ya Bidhaa za Tanzania">Official Made in Tanzania Portal</span>
+            </div>
+
+            <h2 class="hero-heading" data-en="Celebrate Tanzanian Products" data-sw="Tunza Bidhaa za Tanzania">Celebrate Tanzanian Products</h2>
+
+            <p class="hero-description" data-en="Discover, view, and celebrate products proudly Made in Tanzania. Our gallery showcases the innovation, craftsmanship, and quality of Tanzanian manufacturers and artisans." data-sw="Gundua, tazama, na sherehekea bidhaa zilizotengenezwa kwa fahari Tanzania. Galeri yetu inaonyesha ubunifu, ustadi, na ubora wa watengenezaji na mafundi wa Tanzania.">Discover, view, and celebrate products proudly Made in Tanzania. Our gallery showcases the innovation, craftsmanship, and quality of Tanzanian manufacturers and artisans.</p>
+
+            <div class="hero-buttons">
+                <a href="#gallery" class="btn btn-primary" data-en="View Gallery Now" data-sw="Tazama Galeri Sasa">
+                    View Gallery Now
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                </a>
+                <a href="#about" class="btn btn-secondary" data-en="Learn More" data-sw="Jifunze Zaidi">Learn More</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats / Action Cards -->
+    <section class="stats-section">
+        <div class="stats-grid">
+
+            <!-- Card 1: Gallery -->
+            <a href="#gallery" class="stat-card stat-card-link">
+                <div class="stat-icon stat-icon-blue">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                        <circle cx="8.5" cy="8.5" r="1.5"/>
+                        <polyline points="21 15 16 10 5 21"/>
+                    </svg>
+                </div>
+                <div class="stat-value">2min</div>
+                <div class="stat-label" data-en="View Made in Tanzania Gallery" data-sw="Tazama Galeri ya Bidhaa za Tanzania">View Made in Tanzania Gallery</div>
+            </a>
+
+            <!-- Card 2: Register -->
+            <a href="#register" class="stat-card stat-card-link">
+                <div class="stat-icon stat-icon-green">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                        <circle cx="8.5" cy="7" r="4"/>
+                        <line x1="20" y1="8" x2="20" y2="14"/>
+                        <line x1="23" y1="11" x2="17" y2="11"/>
+                    </svg>
+                </div>
+                <div class="stat-value">100%</div>
+                <div class="stat-label" data-en="Register for Made in Tanzania" data-sw="Jisajili kwa Bidhaa za Tanzania">Register for Made in Tanzania</div>
+            </a>
+
+            <!-- Card 3: Documentary -->
+            <a href="#documentary" class="stat-card stat-card-link">
+                <div class="stat-icon stat-icon-orange">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="23 7 16 12 23 17 23 7"/>
+                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+                    </svg>
+                </div>
+                <div class="stat-value">24/7</div>
+                <div class="stat-label" data-en="Watch Made in Tanzania Documentary" data-sw="Tazama Filamu ya Bidhaa za Tanzania">Watch Made in Tanzania Documentary</div>
+            </a>
+
+            <!-- Card 4: Languages -->
+            <div class="stat-card">
+                <div class="stat-icon stat-icon-purple">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="2" y1="12" x2="22" y2="12"/>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                    </svg>
+                </div>
+                <div class="stat-value">EN/SW</div>
+                <div class="stat-label" data-en="Languages" data-sw="Lugha">Languages</div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="gallery-section">
+        <div class="section-header">
+            <h2 class="section-title" data-en="Made in Tanzania Gallery" data-sw="Galeri ya Bidhaa za Tanzania">Made in Tanzania Gallery</h2>
+            <p class="section-subtitle" data-en="Browse products proudly manufactured in Tanzania" data-sw="Vinjari bidhaa zilizotengenezwa kwa fahari Tanzania">Browse products proudly manufactured in Tanzania</p>
+        </div>
+
+        <!-- Category Filter -->
+        <div class="category-filter">
+            <button class="filter-btn active" data-category="all" data-en="All Products" data-sw="Bidhaa Zote">All Products</button>
+            <button class="filter-btn" data-category="textiles" data-en="Textiles & Fashion" data-sw="Nguo na Mitindo">Textiles & Fashion</button>
+            <button class="filter-btn" data-category="food" data-en="Food & Beverages" data-sw="Chakula na Vinywaji">Food & Beverages</button>
+            <button class="filter-btn" data-category="crafts" data-en="Handicrafts" data-sw="Vikonyo">Handicrafts</button>
+            <button class="filter-btn" data-category="agriculture" data-en="Agriculture" data-sw="Kilimo">Agriculture</button>
+            <button class="filter-btn" data-category="manufacturing" data-en="Manufacturing" data-sw="Uzalishaji">Manufacturing</button>
+        </div>
+
+        <!-- Gallery Grid -->
+        <div class="gallery-grid" id="galleryGrid">
+            <!-- Items populated by JavaScript -->
+        </div>
+
+        <div class="load-more-container">
+            <button class="btn btn-primary" id="loadMoreBtn" data-en="Load More Products" data-sw="Pakia Bidhaa Zaidi">Load More Products</button>
+        </div>
+    </section>
+
+    <!-- Register Section -->
+    <section id="register" class="register-section">
+        <div class="register-card">
+            <div class="register-content">
+                <h2 class="section-title" data-en="Register Your Product" data-sw="Sajili Bidhaa Yako">Register Your Product</h2>
+                <p class="section-subtitle" data-en="Join the Made in Tanzania movement. Register your product to be featured in our gallery and reach more customers locally and internationally." data-sw="Jiunge na harakati za Bidhaa za Tanzania. Sajili bidhaa yako ionyeshwe katika galeri yetu na ufikie wateja zaidi ndani na nje ya nchi.">Join the Made in Tanzania movement. Register your product to be featured in our gallery and reach more customers locally and internationally.</p>
+                <a href="#" class="btn btn-primary" data-en="Register Now" data-sw="Jisajili Sasa">
+                    Register Now
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                </a>
+            </div>
+            <div class="register-visual">
+                <div class="register-icon-large">
+                    <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="40" cy="40" r="36" fill="#0A7E4B" opacity="0.1"/>
+                        <path d="M30 45 L37 38 L43 44 L52 32" stroke="#0A7E4B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="40" cy="40" r="28" stroke="#0A7E4B" stroke-width="2" fill="none" stroke-dasharray="4 4"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Documentary Section -->
+    <section id="documentary" class="documentary-section">
+        <div class="section-header">
+            <h2 class="section-title" data-en="Made in Tanzania Documentary" data-sw="Filamu ya Bidhaa za Tanzania">Made in Tanzania Documentary</h2>
+            <p class="section-subtitle" data-en="Watch our documentary showcasing Tanzanian innovation and craftsmanship" data-sw="Tazama filamu yetu inayoonyesha ubunifu na ustadi wa Tanzania">Watch our documentary showcasing Tanzanian innovation and craftsmanship</p>
+        </div>
+        <div class="video-container">
+            <div class="video-placeholder">
+                <div class="play-button">
+                    <svg viewBox="0 0 24 24" fill="white" width="48" height="48"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                </div>
+                <p class="video-label" data-en="Coming Soon" data-sw="Inakuja Hivi Karibuni">Coming Soon</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <div class="logo-box">
+                    <svg class="logo-icon" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="30" cy="30" r="28" fill="#0A7E4B" opacity="0.1"/>
+                        <path d="M15 35 L25 20 L30 28 L40 15 L45 35" stroke="#0A7E4B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M20 40 L40 40" stroke="#0A7E4B" stroke-width="3" stroke-linecap="round"/>
+                        <circle cx="30" cy="30" r="8" stroke="#1B4F8A" stroke-width="2.5" fill="none"/>
+                        <path d="M27 30 L29 32 L33 28" stroke="#0A7E4B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <div class="logo-text">
+                        <span class="logo-title">TANTRADE</span>
+                        <span class="logo-subtitle">Tanzania Trade Development Authority</span>
+                    </div>
+                </div>
+                <p class="footer-desc" data-en="Promoting Tanzanian trade and business development through showcasing local products." data-sw="Kukuza biashara na maendeleo ya Tanzania kupitia kuonyesha bidhaa za ndani.">Promoting Tanzanian trade and business development through showcasing local products.</p>
+            </div>
+            <div class="footer-links">
+                <h4 data-en="Quick Links" data-sw="Viungo vya Haraka">Quick Links</h4>
+                <a href="#gallery" data-en="Gallery" data-sw="Galeri">Gallery</a>
+                <a href="#register" data-en="Register" data-sw="Jisajili">Register</a>
+                <a href="#documentary" data-en="Documentary" data-sw="Filamu">Documentary</a>
+            </div>
+            <div class="footer-contact">
+                <h4 data-en="Contact" data-sw="Mawasiliano">Contact</h4>
+                <p>Dar es Salaam, Tanzania</p>
+                <p>info@tantrade.go.tz</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Tantrade - Tanzania Trade Development Authority. <span data-en="All rights reserved." data-sw="Haki zote zimehifadhiwa.">All rights reserved.</span></p>
+        </div>
+    </footer>
+
+    <!-- Lightbox Modal -->
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+        <div class="lightbox-content">
+            <img id="lightboxImage" src="" alt="">
+            <div class="lightbox-info">
+                <h3 id="lightboxTitle"></h3>
+                <p id="lightboxCategory"></p>
+                <p id="lightboxDescription"></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
