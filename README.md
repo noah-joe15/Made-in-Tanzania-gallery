@@ -50,3 +50,65 @@ tantrade-gallery/
 
 ### Adding New Products
 Open `script.js` and add a new object to the `galleryProducts` array. Ensure you use an inline SVG string for the `icon` property to maintain visual consistency.
+
+# Tantrade Gallery Admin Panel
+
+A secure, claymorphism-styled administrative interface for managing the "Made in Tanzania" product gallery. This panel allows authorized users to upload images, videos, or YouTube directive links, which are then displayed on the public-facing gallery site.
+
+## Architecture
+
+- Hosting: Cloudflare Pages (Fast, global CDN)
+- Database: Supabase (PostgreSQL)
+- File Storage: Supabase Storage (Handles PNG, JPG, WEBP, MP4, WEBM)
+
+## Features
+
+- Claymorphism UI Design: Soft shadows, rounded corners, and a clean, modern aesthetic.
+- Multi-format Media Support: Upload local image/video files or paste YouTube directive links.
+- Bilingual Data Entry: Dedicated fields for both English and Swahili content.
+- Real-time Management: View, add, and delete gallery items instantly.
+- Zero Emojis: Professional SVG icons used exclusively throughout the interface.
+
+## Project Structure
+
+tantrade-admin/
+├── admin.html      # Admin interface structure
+├── admin.css       # Claymorphism styling
+├── admin.js        # Supabase integration and form logic
+└── README.md       # Documentation
+
+## Setup Instructions
+
+### 1. Supabase Configuration
+1. Create a new project at supabase.com.
+2. Navigate to the Table Editor and create a table named `gallery_products` with the following columns:
+   - id (int8, primary key)
+   - created_at (timestamp)
+   - title_en (text)
+   - title_sw (text)
+   - category (text)
+   - description_en (text)
+   - description_sw (text)
+   - media_type (text)
+   - media_url (text)
+3. Navigate to Storage and create a new public bucket named `gallery-media`.
+4. Go to Project Settings > API and copy your Project URL and anon public key.
+
+### 2. Local Configuration
+1. Open `admin.js`.
+2. Replace `YOUR_SUPABASE_PROJECT_URL` and `YOUR_SUPABASE_ANON_KEY` with your actual Supabase credentials.
+
+### 3. Deployment
+1. Push this repository to GitHub.
+2. Log in to Cloudflare Dashboard > Workers & Pages > Create > Pages.
+3. Connect to your GitHub repository.
+4. Set Build command to empty, and Output directory to `/`.
+5. Deploy.
+
+## Security Note
+
+For production environments, ensure Row Level Security (RLS) is enabled on the `gallery_products` table and the `gallery-media` storage bucket in Supabase. Configure authentication (e.g., Supabase Auth) to restrict access to the `admin.html` page to authorized personnel only.
+
+## License
+
+Copyright 2026 Tantrade - Tanzania Trade Development Authority. All rights reserved.
