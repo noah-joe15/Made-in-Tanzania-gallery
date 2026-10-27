@@ -1,174 +1,101 @@
-// ===== Gallery Data =====
-const galleryProducts = [
-    {
-        id: 1,
-        title: "Kitenge Fashion Dress",
-        titleSw: "Gauni la Kitenge",
-        category: "textiles",
-        categorySw: "Nguo",
-        description: "Beautiful handmade Kitenge dress featuring traditional Tanzanian patterns and vibrant colors.",
-        descriptionSw: "Gauni la Kitenge lililotengenezwa kwa mikono lenye michoro ya jadi ya Tanzania na rangi za kuvutia.",
-        icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46L16 2 12 5 8 2 3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg>`
-    },
-    {
-        id: 2,
-        title: "Tanzanian Coffee Beans",
-        titleSw: "Mbegu za Kahawa ya Tanzania",
-        category: "agriculture",
-        categorySw: "Kilimo",
-        description: "Premium Arabica coffee beans grown in the highlands of Kilimanjaro region.",
-        descriptionSw: "Mbegu za kahawa za Arabica bora zilizokuzwa katika milima ya mkoa wa Kilimanjaro.",
-        icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8c0 4-3 7-7 7s-7-3-7-7 3-7 7-7 7 3 7 7z"/><path d="M11 1v14"/><path d="M11 15c-2 2-2 5 0 7"/><path d="M11 15c2 2 2 5 0 7"/></svg>`
-    },
-    {
-        id: 3,
-        title: "Makonde Wood Carving",
-        titleSw: "Sanamu ya Mbao ya Makonde",
-        category: "crafts",
-        categorySw: "Vikonyo",
-        description: "Intricate wood carving by Makonde artisans, a UNESCO recognized art form from southern Tanzania.",
-        descriptionSw: "Uchoraji wa mbao wa Makonde, sanaa inayotambuliwa na UNESCO kutoka kusini mwa Tanzania.",
-        icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>`
-    },
-    {
-        id: 4,
-        title: "Tanzanian Cashew Nuts",
-        titleSw: "Korosho za Tanzania",
-        category: "food",
-        categorySw: "Chakula",
-        description: "High-quality roasted cashew nuts from the coastal regions of Tanzania.",
-        descriptionSw: "Korosho zilizokaangwa za ubora wa juu kutoka maeneo ya pwani ya Tanzania.",
-        icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C7 2 3 7 3 12s4 10 9 10 9-5 9-10S17 2 12 2z"/><path d="M12 2v20"/><path d="M12 12h8"/></svg>`
-    },
-    {
-        id: 5,
-        title: "Maasai Beaded Jewelry",
-        titleSw: "Mapambo ya Shanga za Maasai",
-        category: "crafts",
-        categorySw: "Vikonyo",
-        description: "Handcrafted beaded necklaces and bracelets made by Maasai women artisans.",
-        descriptionSw: "Mapambo ya shanga yaliyotengenezwa kwa mikono na wanawake wa Maasai.",
-        icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><circle cx="9" cy="9" r="1" fill="currentColor"/><circle cx="15" cy="9" r="1" fill="currentColor"/></svg>`
-    },
-    {
-        id: 6,
-        title: "Tanzanian Tea",
-        titleSw: "Chai ya Tanzania",
-        category: "agriculture",
-        categorySw: "Kilimo",
-        description: "Premium black tea from the lush tea plantations of Mufindi, Iringa.",
-        descriptionSw: "Chai bora ya nyeusi kutoka mashamba ya chai ya Mufindi, Iringa.",
-        icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>`
-    },
-    {
-        id: 7,
-        title: "Kanga Fabric",
-        titleSw: "Kanga",
-        category: "textiles",
-        categorySw: "Nguo",
-        description: "Traditional Kanga fabric with Swahili proverbs, worn across East Africa.",
-        descriptionSw: "Kanga ya jadi na methali za Kiswahili, inayovaliwa Afrika Mashariki.",
-        icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>`
-    },
-    {
-        id: 8,
-        title: "Tanzanian Honey",
-        titleSw: "Asali ya Tanzania",
-        category: "food",
-        categorySw: "Chakula",
-        description: "Pure organic honey harvested from the miombo woodlands of western Tanzania.",
-        descriptionSw: "Asali safi ya asili iliyovunwa kutoka misitu ya miombo ya magharibi mwa Tanzania.",
-        icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>`
-    },
-    {
-        id: 9,
-        title: "Tingatinga Painting",
-        titleSw: "Uchoraji wa Tingatinga",
-        category: "crafts",
-        categorySw: "Vikonyo",
-        description: "Colorful Tingatinga style painting depicting African wildlife and daily life.",
-        descriptionSw: "Uchoraji wa mtindo wa Tingatinga unaonyesha wanyama wa Afrika na maisha ya kila siku.",
-        icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>`
-    },
-    {
-        id: 10,
-        title: "Tanzanian Sisal Products",
-        titleSw: "Bidhaa za Mkonge",
-        category: "manufacturing",
-        categorySw: "Uzalishaji",
-        description: "Eco-friendly sisal bags and baskets handwoven by local artisans.",
-        descriptionSw: "Mifuko na kikapu vya mkonge vya mazingira vilivyotengenezwa kwa mikono na mafundi wa ndani.",
-        icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>`
-    },
-    {
-        id: 11,
-        title: "Spices of Zanzibar",
-        titleSw: "Viungo vya Zanzibar",
-        category: "food",
-        categorySw: "Chakula",
-        description: "Aromatic spice blend from the Spice Island of Zanzibar including cloves, cinnamon, and cardamom.",
-        descriptionSw: "Mchanganyiko wa viungo kutoka Kisiwa cha Viungo cha Zanzibar ikiwa ni pamoja na karafuu, mdalasini, na hilali.",
-        icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`
-    },
-    {
-        id: 12,
-        title: "Tanzanian Leather Goods",
-        titleSw: "Bidhaa za Ngozi za Tanzania",
-        category: "manufacturing",
-        categorySw: "Uzalishaji",
-        description: "Handcrafted leather bags, belts, and shoes made from premium Tanzanian leather.",
-        descriptionSw: "Mifuko, mikanda, na viatu vya ngozi vilivyotengenezwa kwa mikono kutoka ngozi bora ya Tanzania.",
-        icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>`
-    }
-];
+// ==========================================
+// CONFIGURATION: Vercel API routes (relative path)
+// ==========================================
+const API_BASE_URL = '';
 
-// ===== State =====
 let currentLanguage = 'en';
 let currentCategory = 'all';
 let visibleCount = 6;
+let galleryProducts = [];
+
+// ===== Fetch Products =====
+async function fetchProducts() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/products`);
+        if (!response.ok) throw new Error('Failed to fetch');
+        galleryProducts = await response.json();
+        renderGallery();
+    } catch (error) {
+        console.error('Failed to load gallery:', error);
+        const grid = document.getElementById('galleryGrid');
+        if (grid) {
+            grid.innerHTML = '<p style="text-align:center; grid-column: 1/-1; color: var(--text-light);">Failed to load products. Please try again later.</p>';
+        }
+    }
+}
 
 // ===== Language Switching =====
 function setLanguage(lang) {
     currentLanguage = lang;
-
     document.querySelectorAll('.lang-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.lang === lang);
     });
-
     document.querySelectorAll('[data-en]').forEach(el => {
         el.textContent = el.dataset[lang];
     });
-
     renderGallery();
 }
 
 // ===== Gallery Rendering =====
 function renderGallery() {
     const grid = document.getElementById('galleryGrid');
+    if (!grid) return;
+
     const filtered = currentCategory === 'all'
         ? galleryProducts
         : galleryProducts.filter(p => p.category === currentCategory);
 
     const toShow = filtered.slice(0, visibleCount);
 
-    grid.innerHTML = toShow.map(product => `
+    if (toShow.length === 0) {
+        grid.innerHTML = '<p style="text-align:center; grid-column: 1/-1; color: var(--text-light);">No products found in this category.</p>';
+        return;
+    }
+
+    grid.innerHTML = toShow.map(product => {
+        const isYoutube = product.media_type === 'youtube';
+        const isVideo = product.media_type === 'video';
+        
+        let mediaContent = '';
+        
+        if (isYoutube) {
+            mediaContent = `<div class="gallery-item-placeholder" style="background: linear-gradient(135deg, #FFF3EB, #F3EEF9);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-primary)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:48px;height:48px;"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+            </div>`;
+        } else if (isVideo) {
+            mediaContent = `<video src="${product.media_url}" muted loop playsinline onmouseover="this.play()" onmouseout="this.pause()" style="width:100%;height:100%;object-fit:cover;"></video>`;
+        } else {
+            mediaContent = `<img src="${product.media_url}" alt="${product.title_en}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='<div class=\\'gallery-item-placeholder\\'><svg viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'currentColor\\' stroke-width=\\'1.5\\'><rect x=\\'3\\' y=\\'3\\' width=\\'18\\' height=\\'18\\' rx=\\'2\\'/><circle cx=\\'8.5\\' cy=\\'8.5\\' r=\\'1.5\\'/><polyline points=\\'21 15 16 10 5 21\\'/></svg></div>'">`;
+        }
+
+        return `
         <div class="gallery-item" onclick="openLightbox(${product.id})" data-category="${product.category}">
             <div class="gallery-item-image">
-                <div class="gallery-item-placeholder">
-                    ${product.icon}
-                </div>
+                ${mediaContent}
             </div>
             <div class="gallery-item-info">
-                <div class="gallery-item-title">${currentLanguage === 'sw' ? product.titleSw : product.title}</div>
-                <div class="gallery-item-category">${currentLanguage === 'sw' ? product.categorySw : product.category}</div>
+                <div class="gallery-item-title">${currentLanguage === 'sw' ? product.title_sw : product.title_en}</div>
+                <div class="gallery-item-category">${currentLanguage === 'sw' ? getCategorySw(product.category) : product.category}</div>
             </div>
         </div>
-    `).join('');
+        `;
+    }).join('');
 
     const loadMoreBtn = document.getElementById('loadMoreBtn');
     if (loadMoreBtn) {
         loadMoreBtn.style.display = toShow.length < filtered.length ? 'inline-flex' : 'none';
     }
+}
+
+function getCategorySw(category) {
+    const map = {
+        'textiles': 'Nguo',
+        'food': 'Chakula',
+        'crafts': 'Vikonyo',
+        'agriculture': 'Kilimo',
+        'manufacturing': 'Uzalishaji'
+    };
+    return map[category] || category;
 }
 
 // ===== Category Filter =====
@@ -183,7 +110,7 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
 });
 
 // ===== Load More =====
-document.getElementById('loadMoreBtn').addEventListener('click', () => {
+document.getElementById('loadMoreBtn')?.addEventListener('click', () => {
     visibleCount += 6;
     renderGallery();
 });
@@ -194,24 +121,28 @@ function openLightbox(id) {
     if (!product) return;
 
     const lightbox = document.getElementById('lightbox');
-    document.getElementById('lightboxTitle').textContent = currentLanguage === 'sw' ? product.titleSw : product.title;
-    document.getElementById('lightboxCategory').textContent = currentLanguage === 'sw' ? product.categorySw : product.category;
-    document.getElementById('lightboxDescription').textContent = currentLanguage === 'sw' ? product.descriptionSw : product.description;
-
-    const imgEl = document.getElementById('lightboxImage');
-    imgEl.style.display = 'none';
+    document.getElementById('lightboxTitle').textContent = currentLanguage === 'sw' ? product.title_sw : product.title_en;
+    document.getElementById('lightboxCategory').textContent = currentLanguage === 'sw' ? getCategorySw(product.category) : product.category;
+    document.getElementById('lightboxDescription').textContent = currentLanguage === 'sw' ? product.description_sw : product.description_en;
 
     const content = document.querySelector('.lightbox-content');
-    let placeholder = content.querySelector('.lightbox-icon-placeholder');
-    if (!placeholder) {
-        placeholder = document.createElement('div');
-        placeholder.className = 'lightbox-icon-placeholder';
-        placeholder.style.cssText = 'width:100%;height:350px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#E8F5EE,#E8EFF8);';
-        content.insertBefore(placeholder, content.firstChild);
-    }
+    let mediaContainer = content.querySelector('.lightbox-media-container');
     
-    // Scale up the SVG icon for the lightbox view
-    placeholder.innerHTML = `<div style="transform: scale(2.5); color: var(--green-primary); opacity: 0.4;">${product.icon}</div>`;
+    if (!mediaContainer) {
+        mediaContainer = document.createElement('div');
+        mediaContainer.className = 'lightbox-media-container';
+        mediaContainer.style.cssText = 'width:100%;min-height:350px;display:flex;align-items:center;justify-content:center;background:var(--bg-light);';
+        content.insertBefore(mediaContainer, content.firstChild);
+    }
+
+    if (product.media_type === 'youtube') {
+        const videoId = product.media_url.split('v=')[1]?.split('&')[0] || product.media_url.split('/').pop();
+        mediaContainer.innerHTML = `<iframe width="100%" height="350" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen style="border-radius: 12px 12px 0 0;"></iframe>`;
+    } else if (product.media_type === 'video') {
+        mediaContainer.innerHTML = `<video src="${product.media_url}" controls autoplay style="width:100%;height:350px;border-radius: 12px 12px 0 0;"></video>`;
+    } else {
+        mediaContainer.innerHTML = `<img src="${product.media_url}" style="width:100%;height:350px;object-fit:cover;border-radius: 12px 12px 0 0;" onerror="this.style.display='none'">`;
+    }
 
     lightbox.classList.add('active');
     document.body.style.overflow = 'hidden';
@@ -221,17 +152,102 @@ function closeLightbox() {
     const lightbox = document.getElementById('lightbox');
     lightbox.classList.remove('active');
     document.body.style.overflow = '';
+    const mediaContainer = document.querySelector('.lightbox-media-container');
+    if (mediaContainer) mediaContainer.remove();
 }
 
-document.getElementById('lightbox').addEventListener('click', (e) => {
+document.getElementById('lightbox')?.addEventListener('click', (e) => {
     if (e.target === e.currentTarget) closeLightbox();
 });
 
+// ===== Registration Modal =====
+function openRegistrationModal() {
+    const modal = document.getElementById('registrationModal');
+    if (modal) {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeRegistrationModal() {
+    const modal = document.getElementById('registrationModal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+        const form = document.getElementById('registrationForm');
+        if (form) form.reset();
+        const status = document.getElementById('registrationStatus');
+        if (status) {
+            status.textContent = '';
+            status.className = 'form-status';
+        }
+    }
+}
+
+document.getElementById('registrationForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const submitBtn = document.getElementById('submitRegistrationBtn');
+    const statusMsg = document.getElementById('registrationStatus');
+    
+    if (!submitBtn || !statusMsg) return;
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+    statusMsg.textContent = '';
+    statusMsg.className = 'form-status';
+
+    const payload = {
+        full_name: document.getElementById('fullName').value,
+        phone: document.getElementById('phone').value,
+        business_name: document.getElementById('businessName').value,
+        region: document.getElementById('region').value
+    };
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/registrations`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || 'Failed to submit registration');
+        }
+
+        statusMsg.textContent = currentLanguage === 'sw' 
+            ? 'Maombi yametumwa kwa mafanikio! Tutawasiliana nawe hivi karibuni.' 
+            : 'Application submitted successfully! We will contact you soon.';
+        statusMsg.className = 'form-status success';
+        
+        document.getElementById('registrationForm').reset();
+        
+        setTimeout(() => {
+            closeRegistrationModal();
+        }, 2500);
+
+    } catch (error) {
+        console.error('Registration error:', error);
+        statusMsg.textContent = currentLanguage === 'sw' 
+            ? 'Hitilafu: ' + error.message 
+            : 'Error: ' + error.message;
+        statusMsg.className = 'form-status error';
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = currentLanguage === 'sw' ? 'Tuma Maombi' : 'Submit Application';
+    }
+});
+
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'Escape') {
+        closeRegistrationModal();
+        closeLightbox();
+    }
 });
 
 // ===== Initialize =====
 document.addEventListener('DOMContentLoaded', () => {
-    renderGallery();
+    fetchProducts();
 });
