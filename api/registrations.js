@@ -1,22 +1,30 @@
 import { sql } from '@vercel/postgres';
 
 export const config = {
-  runtime: 'edge',
+  api: {
+    bodyParser: false,
+  },
 };
 
-export default async function handler(request) {
+export default async function handler(request, response) {
   if (request.method === 'GET') {
     try {
       const result = await sql`SELECT * FROM registrations ORDER BY created_at DESC`;
-      return new Response(JSON.stringify(result.rows), { status: 200, headers: { 'Content-Type': 'application/json' } });
+      return response.status(200).json(result.rows);
     } catch (error) {
-      return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+      return response.status(500).json({ error: error.message });
     }
   }
 
   if (request.method === 'POST') {
     try {
-      const body = await request.json();
+      const body = await new Promise((resolve, reject) => {
+        let data = '';
+        request.on('data', chunk => data += chunk);
+        request.on('end', () => resolve(JSON.parse(data)));
+        request.on('error', reject);
+      });
+
       const { full_name, phone, business_name, region } = body;
       
       await sql`
@@ -24,22 +32,28 @@ export default async function handler(request) {
         VALUES (${full_name}, ${phone}, ${business_name}, ${region})
       `;
       
-      return new Response(JSON.stringify({ success: true }), { status: 200 });
+      return response.status(200).json({ success: true, message: 'Registration submitted' });
     } catch (error) {
-      return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+      return response.status(500).json({ error: error.message });
     }
   }
 
   if (request.method === 'DELETE') {
     try {
-      const body = await request.json();
+      const body = await new Promise((resolve, reject) => {
+        let data = '';
+        request.on('data', chunk => data += chunk);
+        request.on('end', () => resolve(JSON.parse(data)));
+        request.on('error', reject);
+      });
+
       const { id } = body;
       await sql`DELETE FROM registrations WHERE id = ${id}`;
-      return new Response(JSON.stringify({ success: true }), { status: 200 });
+      return response.status(200).json({ success: true });
     } catch (error) {
-      return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+      return response.status(500).json({ error: error.message });
     }
   }
 
-  return new Response('Method not allowed', { status: 405 });
+  return response.status(405).json({ error: 'Method not allowed' });
 }
