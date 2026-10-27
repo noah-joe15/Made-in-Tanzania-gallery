@@ -1,5 +1,6 @@
 import { sql } from '@vercel/postgres';
 import { put, del } from '@vercel/blob';
+import { formidable } from 'formidable';
 
 export const config = {
   api: {
@@ -22,22 +23,26 @@ export default async function handler(request, response) {
       const contentType = request.headers['content-type'];
       
       if (contentType && contentType.includes('multipart/form-data')) {
-        const formData = await request.formData();
-        const titleEn = formData.get('title_en');
-        const titleSw = formData.get('title_sw');
-        const category = formData.get('category');
-        const descEn = formData.get('description_en');
-        const descSw = formData.get('description_sw');
-        const mediaType = formData.get('media_type');
-        const file = formData.get('media_file');
-        const youtubeUrl = formData.get('youtube_url');
+        // Use formidable to parse the file upload
+        const form = formidable({});
+        const [fields, files] = await form.parse(request);
 
+        const titleEn = fields.title_en?.[0];
+        const titleSw = fields.title_sw?.[0];
+        const category = fields.category?.[0];
+        const descEn = fields.description_en?.[0];
+        const descSw = fields.description_sw?.[0];
+        const mediaType = fields.media_type?.[0];
+        const youtubeUrl = fields.youtube_url?.[0];
+        
         let mediaUrl = '';
 
         if (mediaType === 'youtube') {
           mediaUrl = youtubeUrl;
-        } else if (file && file.size > 0) {
-          const blob = await put(`${category}/${Date.now()}-${file.name}`, file, {
+        } else if (files.media_file && files.media_file.length > 0) {
+          const file = files.media_file[0];
+          // Upload the file from the temporary path to Vercel Blob
+          const blob = await put(`${category}/${Date.now()}-${file.originalFilename}`, file.filepath, {
             access: 'public',
           });
           mediaUrl = blob.url;
@@ -50,6 +55,7 @@ export default async function handler(request, response) {
 
         return response.status(200).json({ success: true });
       } else {
+        // Fallback for JSON (like the YouTube test we just did)
         const body = await new Promise((resolve, reject) => {
           let data = '';
           request.on('data', chunk => data += chunk);
