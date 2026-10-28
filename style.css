@@ -1472,9 +1472,9 @@ img, video, svg {
     outline-offset: 2px;
 }
 
-/* ===== Dual Logo Layout (Updated) ===== */
+/* ===== Dual Logo Layout (Maximum Visibility) ===== */
 .logo-section {
-    gap: 20px;
+    gap: 24px; /* More space between the two logos */
     align-items: center;
 }
 
@@ -1487,40 +1487,40 @@ img, video, svg {
     align-items: center;
 }
 
-/* Bigger and more visible */
+/* Much bigger and highly visible */
 .secondary-logo {
     width: auto !important;
-    height: 75px !important; /* Increased from 50px */
-    max-width: 220px !important;
+    height: 90px !important; /* Increased from 75px */
+    max-width: 280px !important;
     object-fit: contain;
 }
 
 /* On tablets */
 @media (max-width: 768px) {
     .secondary-logo {
-        height: 60px !important;
-        max-width: 180px !important;
+        height: 70px !important;
+        max-width: 200px !important;
     }
     .logo-section {
-        gap: 12px;
+        gap: 16px;
     }
 }
 
 /* On mobile phones */
 @media (max-width: 480px) {
     .secondary-logo {
-        height: 50px !important;
-        max-width: 150px !important;
+        height: 55px !important;
+        max-width: 160px !important;
     }
     .logo-section {
-        gap: 8px;
+        gap: 10px;
     }
 }
 
 /* Very small screens */
 @media (max-width: 360px) {
     .secondary-logo {
-        height: 40px !important;
-        max-width: 120px !important;
+        height: 45px !important;
+        max-width: 130px !important;
     }
 }
