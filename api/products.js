@@ -1,10 +1,12 @@
 import { sql } from '@vercel/postgres';
 import { put, del } from '@vercel/blob';
 import { formidable } from 'formidable';
+import fs from 'fs';
 
 export const config = {
   api: {
     bodyParser: false,
+    responseLimit: false,
   },
 };
 
@@ -24,8 +26,17 @@ export default async function handler(request, response) {
       
       if (contentType && contentType.includes('multipart/form-data')) {
         // Use formidable to parse the file upload
-        const form = formidable({});
-        const [fields, files] = await form.parse(request);
+        const form = formidable({
+          keepExtensions: true,
+          maxFileSize: 10 * 1024 * 1024, // 10MB max
+        });
+        
+        const [fields, files] = await new Promise((resolve, reject) => {
+          form.parse(request, (err, fields, files) => {
+            if (err) reject(err);
+            resolve([fields, files]);
+          });
+        });
 
         const titleEn = fields.title_en?.[0];
         const titleSw = fields.title_sw?.[0];
@@ -41,11 +52,20 @@ export default async function handler(request, response) {
           mediaUrl = youtubeUrl;
         } else if (files.media_file && files.media_file.length > 0) {
           const file = files.media_file[0];
-          // Upload the file from the temporary path to Vercel Blob
-          const blob = await put(`${category}/${Date.now()}-${file.originalFilename}`, file.filepath, {
+          
+          // Read the file and upload to Vercel Blob
+          const fileContent = fs.readFileSync(file.filepath);
+          const fileName = `${category}/${Date.now()}-${file.originalFilename}`;
+          
+          const blob = await put(fileName, fileContent, {
             access: 'public',
+            contentType: file.mimetype || 'application/octet-stream',
           });
+          
           mediaUrl = blob.url;
+          
+          // Clean up the temporary file
+          fs.unlinkSync(file.filepath);
         }
 
         await sql`
@@ -55,11 +75,17 @@ export default async function handler(request, response) {
 
         return response.status(200).json({ success: true });
       } else {
-        // Fallback for JSON (like the YouTube test we just did)
+        // Handle JSON data (for YouTube links)
         const body = await new Promise((resolve, reject) => {
           let data = '';
           request.on('data', chunk => data += chunk);
-          request.on('end', () => resolve(JSON.parse(data)));
+          request.on('end', () => {
+            try {
+              resolve(JSON.parse(data));
+            } catch (e) {
+              reject(e);
+            }
+          });
           request.on('error', reject);
         });
 
@@ -71,7 +97,7 @@ export default async function handler(request, response) {
         return response.status(200).json({ success: true });
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Upload error:', error);
       return response.status(500).json({ error: error.message });
     }
   }
