@@ -14,6 +14,62 @@ const submitBtn = document.getElementById('submitBtn');
 const statusMessage = document.getElementById('statusMessage');
 const productsTableBody = document.getElementById('productsTableBody');
 
+// ===== Sidebar Navigation =====
+function showSection(sectionName) {
+    // Hide all sections
+    document.querySelectorAll('.admin-section').forEach(section => {
+        section.classList.remove('active');
+    });
+    
+    // Show selected section
+    const targetSection = document.getElementById(`${sectionName}Section`);
+    if (targetSection) {
+        targetSection.classList.add('active');
+    }
+    
+    // Update nav links active state
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === `#${sectionName}`) {
+            link.classList.add('active');
+        }
+    });
+
+    // Close sidebar on mobile after selection (if you add a mobile toggle button later)
+    const sidebar = document.querySelector('.admin-sidebar');
+    if (sidebar && window.innerWidth <= 1024) {
+        sidebar.classList.remove('open');
+    }
+}
+
+// Mobile Sidebar Toggle (Optional: add a button with onclick="toggleSidebar()" if needed)
+function toggleSidebar() {
+    const sidebar = document.querySelector('.admin-sidebar');
+    if (sidebar) {
+        sidebar.classList.toggle('open');
+    }
+}
+
+// ===== Dynamic Category Suggestions =====
+async function loadCategorySuggestions() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/products`);
+        if (!response.ok) throw new Error('Failed to fetch products');
+        const products = await response.json();
+        
+        // Extract unique categories
+        const categories = [...new Set(products.map(p => p.category).filter(Boolean))];
+        
+        // Populate datalist in the form
+        const datalist = document.getElementById('categorySuggestions');
+        if (datalist) {
+            datalist.innerHTML = categories.map(cat => `<option value="${cat}">`).join('');
+        }
+    } catch (error) {
+        console.error('Error loading category suggestions:', error);
+    }
+}
+
 // Toggle Media Input based on selection
 function toggleMediaInput() {
     const type = mediaTypeSelect.value;
@@ -56,7 +112,6 @@ productForm.addEventListener('submit', async (e) => {
 
     try {
         if (mediaType === 'youtube') {
-            // Send YouTube link as JSON
             const payload = {
                 title_en: document.getElementById('titleEn').value,
                 title_sw: document.getElementById('titleSw').value,
@@ -75,7 +130,6 @@ productForm.addEventListener('submit', async (e) => {
 
             if (!response.ok) throw new Error('Failed to save product');
         } else {
-            // Send file as FormData (for Vercel Blob upload)
             const formData = new FormData();
             formData.append('title_en', document.getElementById('titleEn').value);
             formData.append('title_sw', document.getElementById('titleSw').value);
@@ -102,6 +156,7 @@ productForm.addEventListener('submit', async (e) => {
         toggleMediaInput();
         
         loadProducts();
+        loadCategorySuggestions(); // Refresh category suggestions immediately
 
     } catch (error) {
         console.error('Error saving product:', error);
@@ -173,6 +228,7 @@ async function deleteProduct(id, mediaType, mediaUrl) {
         if (!response.ok) throw new Error('Failed to delete');
 
         loadProducts();
+        loadCategorySuggestions(); // Refresh categories in case it was the last of its kind
     } catch (error) {
         console.error('Error deleting:', error);
         alert('Failed to delete product.');
@@ -249,6 +305,7 @@ async function deleteRegistration(id) {
 document.addEventListener('DOMContentLoaded', () => {
     toggleMediaInput();
     loadProducts();
+    loadCategorySuggestions(); // Load initial category suggestions for the datalist
     setTimeout(() => {
         loadRegistrations();
     }, 500);
