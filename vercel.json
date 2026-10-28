@@ -1,0 +1,9 @@
+{
+  "images": {
+    "domains": [
+      "ko0xtfh9go3lqgqf.public.blob.vercel-storage.com"
+    ],
+    "sizes": [400, 600, 800, 1200],
+    "minimumCacheTTL": 60
+  }
+}
