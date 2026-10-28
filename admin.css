@@ -1,20 +1,25 @@
 :root {
-    --clay-bg: #f0f4f8;
-    --clay-surface: #ffffff;
-    --clay-text: #1a202c;
-    --clay-text-muted: #718096;
-    --clay-primary: #0A7E4B;
-    --clay-primary-hover: #065A35;
-    --clay-danger: #E53E3E;
-    
-    /* Claymorphism Shadows */
-    --shadow-light: -6px -6px 12px #ffffff;
-    --shadow-dark: 6px 6px 12px #d1d9e6;
-    --shadow-inner: inset 4px 4px 8px #d1d9e6, inset -4px -4px 8px #ffffff;
-    --shadow-float: 8px 8px 16px #d1d9e6, -8px -8px 16px #ffffff;
-    
-    --radius: 20px;
-    --radius-sm: 12px;
+    --primary: #0A7E4B;
+    --primary-dark: #065A35;
+    --primary-light: #E8F5EE;
+    --navy: #1e3a5f;
+    --navy-dark: #152a45;
+    --navy-light: #2a4a7f;
+    --bg: #f5f7fa;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --text: #1a202c;
+    --text-muted: #718096;
+    --text-light: #a0aec0;
+    --danger: #E53E3E;
+    --danger-light: #FEE2E2;
+    --success: #0A7E4B;
+    --success-light: #E8F5EE;
+    --radius: 8px;
+    --radius-lg: 12px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+    --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
 }
 
 * {
@@ -24,93 +29,213 @@
 }
 
 body {
-    font-family: 'Inter', sans-serif;
-    background-color: var(--clay-bg);
-    color: var(--clay-text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
     line-height: 1.6;
-    padding: 24px;
+    min-height: 100vh;
 }
 
-.admin-container {
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-/* Claymorphism Card Base */
-.clay-card {
-    background: var(--clay-surface);
-    border-radius: var(--radius);
-    padding: 32px;
-    box-shadow: var(--shadow-float);
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    margin-bottom: 24px;
-}
-
-/* Header */
-.admin-header {
+/* Top Header Bar */
+.top-header {
+    background: var(--navy);
+    color: white;
+    padding: 12px 24px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow-md);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: var(--radius);
+}
+
+.menu-toggle:hover {
+    background: rgba(255,255,255,0.1);
 }
 
 .logo-area {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
 }
 
 .logo-icon {
-    width: 48px;
-    height: 48px;
+    width: 36px;
+    height: 36px;
 }
 
-.logo-area h1 {
-    font-size: 22px;
+.logo-text h1 {
+    font-size: 16px;
     font-weight: 700;
-    color: var(--clay-primary);
+    letter-spacing: 1px;
+    margin: 0;
 }
 
-.logo-area p {
-    font-size: 13px;
-    color: var(--clay-text-muted);
+.logo-text p {
+    font-size: 11px;
+    color: rgba(255,255,255,0.6);
+    margin: 0;
 }
 
-/* Grid Layout */
-.admin-grid {
-    display: grid;
-    grid-template-columns: 1fr 1.2fr;
-    gap: 24px;
-}
-
-@media (max-width: 900px) {
-    .admin-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* Typography */
-h2 {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 24px;
+.header-right {
     display: flex;
     align-items: center;
-    gap: 10px;
-    color: var(--clay-text);
+    gap: 16px;
 }
 
-/* Form Elements */
+.status-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.1);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    background: #48BB78;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.btn-view-site {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.1);
+    color: white;
+    padding: 8px 14px;
+    border-radius: var(--radius);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.btn-view-site:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+/* Layout */
+.admin-layout {
+    display: flex;
+    min-height: calc(100vh - 60px);
+}
+
+/* Sidebar */
+.sidebar {
+    width: 240px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 24px 0;
+    position: sticky;
+    top: 60px;
+    height: calc(100vh - 60px);
+    overflow-y: auto;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 0 12px;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: var(--radius);
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.nav-link:hover {
+    background: var(--bg);
+    color: var(--text);
+}
+
+.nav-link.active {
+    background: var(--primary-light);
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.nav-link svg {
+    flex-shrink: 0;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    padding: 32px;
+    overflow-y: auto;
+}
+
+.content-section {
+    display: none;
+}
+
+.content-section.active {
+    display: block;
+}
+
+.section-header {
+    margin-bottom: 24px;
+}
+
+.section-header h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+/* Cards */
+.card {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    margin-bottom: 24px;
+}
+
+/* Form Styles */
 .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
     margin-bottom: 16px;
-}
-
-@media (max-width: 600px) {
-    .form-row {
-        grid-template-columns: 1fr;
-    }
 }
 
 .form-group {
@@ -121,62 +246,81 @@ h2 {
     display: block;
     font-size: 13px;
     font-weight: 600;
-    color: var(--clay-text-muted);
-    margin-bottom: 8px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    color: var(--text);
+    margin-bottom: 6px;
 }
 
-.clay-input {
+.form-input {
     width: 100%;
-    padding: 14px 18px;
-    border: none;
-    border-radius: var(--radius-sm);
-    background: var(--clay-bg);
-    box-shadow: var(--shadow-inner);
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
     font-family: inherit;
     font-size: 14px;
-    color: var(--clay-text);
-    transition: all 0.2s ease;
+    color: var(--text);
+    background: var(--surface);
+    transition: all 0.2s;
     outline: none;
 }
 
-.clay-input:focus {
-    box-shadow: inset 2px 2px 4px #d1d9e6, inset -2px -2px 4px #ffffff, 0 0 0 2px var(--clay-primary);
+.form-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(10, 126, 75, 0.1);
 }
 
-textarea.clay-input {
+.form-input::placeholder {
+    color: var(--text-light);
+}
+
+textarea.form-input {
     resize: vertical;
     min-height: 80px;
 }
 
-/* File Upload Area */
+select.form-input {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23718096' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 36px;
+}
+
+.form-hint {
+    display: block;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+/* File Upload */
 .file-drop-area {
-    position: relative; /* THIS IS THE CRUCIAL FIX */
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 24px;
+    padding: 32px 24px;
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
     cursor: pointer;
-    border: 2px dashed transparent;
-    transition: all 0.2s ease;
+    transition: all 0.2s;
     text-align: center;
-    min-height: 120px;
+    background: var(--bg);
 }
 
 .file-drop-area:hover {
-    border-color: var(--clay-primary);
+    border-color: var(--primary);
+    background: var(--primary-light);
 }
 
 .file-drop-area svg {
-    color: var(--clay-text-muted);
+    color: var(--text-muted);
     margin-bottom: 8px;
 }
 
 .file-drop-area span {
     font-size: 14px;
-    color: var(--clay-text-muted);
+    color: var(--text-muted);
 }
 
 .file-input {
@@ -187,7 +331,6 @@ textarea.clay-input {
     height: 100%;
     opacity: 0;
     cursor: pointer;
-    z-index: 2;
 }
 
 /* Buttons */
@@ -197,53 +340,42 @@ textarea.clay-input {
     justify-content: center;
     gap: 8px;
     padding: 12px 24px;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius);
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
     border: none;
-    transition: all 0.2s ease;
+    transition: all 0.2s;
     text-decoration: none;
+    font-family: inherit;
 }
 
 .btn-primary {
-    background: var(--clay-primary);
+    background: var(--primary);
     color: white;
-    box-shadow: 4px 4px 8px rgba(10, 126, 75, 0.2), -4px -4px 8px rgba(255, 255, 255, 0.8);
     width: 100%;
+    margin-top: 8px;
 }
 
 .btn-primary:hover {
-    background: var(--clay-primary-hover);
-    transform: translateY(-1px);
+    background: var(--primary-dark);
 }
 
 .btn-primary:disabled {
     opacity: 0.6;
     cursor: not-allowed;
-    transform: none;
-}
-
-.btn-secondary {
-    background: var(--clay-bg);
-    color: var(--clay-text);
-    box-shadow: var(--shadow-dark), var(--shadow-light);
-}
-
-.btn-secondary:hover {
-    box-shadow: var(--shadow-inner);
 }
 
 .btn-danger {
-    background: var(--clay-bg);
-    color: var(--clay-danger);
-    box-shadow: var(--shadow-dark), var(--shadow-light);
-    padding: 8px 12px;
+    background: var(--danger-light);
+    color: var(--danger);
+    padding: 6px 12px;
+    font-size: 13px;
 }
 
 .btn-danger:hover {
-    box-shadow: var(--shadow-inner);
-    color: #c53030;
+    background: var(--danger);
+    color: white;
 }
 
 /* Table */
@@ -251,49 +383,43 @@ textarea.clay-input {
     overflow-x: auto;
 }
 
-.clay-table {
+.data-table {
     width: 100%;
-    border-collapse: separate;
-    border-spacing: 0 8px;
+    border-collapse: collapse;
 }
 
-.clay-table th {
+.data-table th {
     text-align: left;
     padding: 12px 16px;
     font-size: 12px;
     font-weight: 600;
-    color: var(--clay-text-muted);
+    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    border-bottom: 2px solid var(--border);
 }
 
-.clay-table td {
-    background: var(--clay-bg);
+.data-table td {
     padding: 16px;
     font-size: 14px;
-    color: var(--clay-text);
+    border-bottom: 1px solid var(--border);
 }
 
-.clay-table tr td:first-child {
-    border-radius: var(--radius-sm) 0 0 var(--radius-sm);
-}
-
-.clay-table tr td:last-child {
-    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+.data-table tr:last-child td {
+    border-bottom: none;
 }
 
 .media-preview {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius);
     object-fit: cover;
-    background: var(--clay-surface);
-    box-shadow: var(--shadow-dark), var(--shadow-light);
+    border: 1px solid var(--border);
 }
 
 .loading-state {
     text-align: center;
-    color: var(--clay-text-muted);
+    color: var(--text-muted);
     padding: 32px !important;
 }
 
@@ -317,237 +443,107 @@ textarea.clay-input {
     min-height: 20px;
 }
 
-.status-message.success { color: var(--clay-primary); }
-.status-message.error { color: var(--clay-danger); }
-
-/* =====================================================================
-   ADMIN: APP-LIKE + FULLY RESPONSIVE (append at the very end of CSS)
-   Design lock: same colors, shadows, radius and classes. No HTML changes.
-   ===================================================================== */
-
-/* ---------- 1. Foundation: safe areas, no sideways scroll, no iOS zoom ---------- */
-html {
-    -webkit-text-size-adjust: 100%;
-    text-size-adjust: 100%;
-    -webkit-tap-highlight-color: transparent;
+.status-message.success {
+    color: var(--success);
 }
 
-body {
-    /* fallback first, then fluid + notch-safe padding */
-    padding: 16px;
-    padding:
-        max(12px, env(safe-area-inset-top))
-        max(clamp(12px, 4vw, 24px), env(safe-area-inset-right))
-        max(16px, env(safe-area-inset-bottom))
-        max(clamp(12px, 4vw, 24px), env(safe-area-inset-left));
-    min-height: 100vh;
-    min-height: 100dvh;
-    overflow-x: hidden;
-    overflow-x: clip;
+.status-message.error {
+    color: var(--danger);
 }
 
-img, video, svg { max-width: 100%; }
+/* Responsive */
+@media (max-width: 1024px) {
+    .menu-toggle {
+        display: block;
+    }
 
-/* Long words/emails never break the layout */
-.clay-card, .clay-table td, .form-group { min-width: 0; overflow-wrap: anywhere; }
+    .sidebar {
+        position: fixed;
+        left: -240px;
+        top: 60px;
+        z-index: 99;
+        transition: left 0.3s;
+        box-shadow: var(--shadow-lg);
+    }
 
-/* ---------- 2. Fluid cards, headings, spacing ---------- */
-.clay-card {
-    padding: 20px;
-    padding: clamp(16px, 4vw, 32px);
-    margin-bottom: 16px;
-    margin-bottom: clamp(12px, 2.5vw, 24px);
+    .sidebar.open {
+        left: 0;
+    }
+
+    .main-content {
+        padding: 24px;
+    }
 }
 
-.admin-grid { gap: 16px; gap: clamp(12px, 2.5vw, 24px); }
-
-h2 { font-size: 17px; font-size: clamp(1rem, 1.2vw + 0.7rem, 1.125rem); margin-bottom: 16px; margin-bottom: clamp(14px, 2.5vw, 24px); }
-.logo-area h1 { font-size: 20px; font-size: clamp(1rem, 2vw + 0.6rem, 1.375rem); }
-
-/* Wide screens: use the room, keep the app centered */
-@media (min-width: 1400px) {
-    .admin-container { max-width: 1320px; }
-}
-
-/* ---------- 3. Touch-friendly inputs and buttons (44px+ targets) ---------- */
-.clay-input {
-    min-height: 48px;
-    font-size: 16px;          /* prevents iOS zoom on focus */
-}
-textarea.clay-input { min-height: 96px; }
-select.clay-input { appearance: none; -webkit-appearance: none; }
-
-.btn { min-height: 48px; touch-action: manipulation; }
-.btn-danger { min-width: 44px; min-height: 44px; }
-
-.form-group label { font-size: 12px; }
-
-/* Clear keyboard focus without changing the clay look */
-.btn:focus-visible,
-.file-drop-area:focus-within {
-    outline: 3px solid var(--clay-primary);
-    outline-offset: 2px;
-}
-
-/* Press feedback like a native app (touch), hover only for mouse */
-.btn:active { transform: scale(0.97); }
-.btn-secondary:active, .btn-danger:active { box-shadow: var(--shadow-inner); }
-
-@media (hover: none) {
-    .btn-primary:hover { transform: none; background: var(--clay-primary); }
-    .file-drop-area:hover { border-color: transparent; }
-}
-
-/* Upload area: bigger drop target on touch screens */
-.file-drop-area { min-height: 140px; border-radius: var(--radius-sm); }
-@media (pointer: coarse) {
-    .file-drop-area { min-height: 160px; }
-}
-
-/* Status message becomes a clear pill only when it has text */
-.status-message:not(:empty) {
-    padding: 10px 14px;
-    border-radius: var(--radius-sm);
-    background: var(--clay-bg);
-    box-shadow: var(--shadow-inner);
-}
-
-/* ---------- 4. Phones: app-bar header, sticky submit, card list ---------- */
 @media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
 
-    /* Sticky app bar */
-    .admin-header {
-        position: sticky;
-        top: 8px;
-        top: max(8px, env(safe-area-inset-top));
-        z-index: 50;
+    .top-header {
         padding: 12px 16px;
-        border-radius: var(--radius-sm);
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-    .logo-area { gap: 12px; min-width: 0; }
-    .logo-icon { width: 40px; height: 40px; flex-shrink: 0; }
-    .logo-area p { font-size: 12px; }
-
-    @supports (backdrop-filter: blur(8px)) or (-webkit-backdrop-filter: blur(8px)) {
-        .admin-header {
-            background: rgba(255, 255, 255, 0.88);
-            -webkit-backdrop-filter: blur(10px);
-            backdrop-filter: blur(10px);
-        }
     }
 
-    .clay-card { border-radius: 16px; }
+    .status-badge {
+        display: none;
+    }
 
-    /* Primary submit stays reachable at the bottom of the form while scrolling */
-    form .btn-primary[type="submit"] {
-        position: sticky;
-        bottom: 8px;
-        bottom: max(8px, env(safe-area-inset-bottom));
-        z-index: 20;
+    .main-content {
+        padding: 16px;
+    }
+
+    .card {
+        padding: 16px;
     }
 }
 
-/* ---------- 5. Small phones: table turns into a card list ---------- */
 @media (max-width: 640px) {
-
-    .table-container { overflow-x: visible; }
-
-    .clay-table,
-    .clay-table tbody { display: block; width: 100%; }
-
-    /* Hide header row visually, keep it for screen readers */
-    .clay-table thead {
-        position: absolute;
-        width: 1px; height: 1px;
-        margin: -1px; padding: 0;
-        overflow: hidden;
-        clip: rect(0 0 0 0);
-        white-space: nowrap;
-        border: 0;
-    }
-
-    .clay-table tr {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 6px 12px;
-        margin-bottom: 12px;
-        padding: 12px;
-        background: var(--clay-bg);
-        border-radius: var(--radius-sm);
-        box-shadow: var(--shadow-dark), var(--shadow-light);
-    }
-
-    .clay-table td {
+    .data-table,
+    .data-table tbody {
         display: block;
-        flex: 0 1 auto;
-        min-width: 0;
-        padding: 2px 0;
-        background: transparent;
-        font-size: 14px;
     }
 
-    .clay-table tr td:first-child,
-    .clay-table tr td:last-child { border-radius: 0; }
+    .data-table thead {
+        display: none;
+    }
 
-    .media-preview { width: 56px; height: 56px; }
+    .data-table tr {
+        display: block;
+        margin-bottom: 16px;
+        padding: 16px;
+        background: var(--bg);
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+    }
 
-    /* Actions (usually the last cell) go full width, aligned right */
-    .clay-table tr td:last-child {
-        flex: 1 1 100%;
+    .data-table td {
         display: flex;
-        justify-content: flex-end;
-        gap: 8px;
-        padding-top: 8px;
-        border-top: 1px solid rgba(0, 0, 0, 0.06);
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: none;
     }
 
-    /* Loading / empty row */
-    .clay-table td.loading-state { flex: 1 1 100%; border-top: 0; justify-content: center; }
-
-    /* Optional labels: only appear if your cells have data-label="Name" */
-    .clay-table td[data-label]::before {
+    .data-table td::before {
         content: attr(data-label);
-        display: block;
-        font-size: 11px;
         font-weight: 600;
-        letter-spacing: 0.5px;
+        color: var(--text-muted);
+        font-size: 12px;
         text-transform: uppercase;
-        color: var(--clay-text-muted);
+    }
+
+    .data-table td:last-child {
+        justify-content: flex-end;
+        padding-top: 12px;
+        border-top: 1px solid var(--border);
     }
 }
 
-/* ---------- 6. Very small / folded cover screens (about 280px) ---------- */
 @media (max-width: 360px) {
-    body { padding-left: 10px; padding-right: 10px; }
-    .clay-card { padding: 14px; }
-    .logo-area p { display: none; }
-    .btn { padding: 12px 16px; }
-}
-
-/* ---------- 7. Landscape phones / flips: save vertical space ---------- */
-@media (max-height: 500px) and (orientation: landscape) {
-    .admin-header { position: static; }
-    form .btn-primary[type="submit"] { position: static; }
-    .file-drop-area { min-height: 100px; }
-}
-
-/* ---------- 8. Foldables with a hinge (progressive enhancement) ---------- */
-@media (horizontal-viewport-segments: 2) {
-    .admin-grid {
-        grid-template-columns: env(viewport-segment-width 0 0) env(viewport-segment-width 1 0);
-        column-gap: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0));
+    .logo-text p {
+        display: none;
     }
-}
 
-/* ---------- 9. Accessibility: reduced motion ---------- */
-@media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
+    .btn-view-site span {
+        display: none;
     }
 }
