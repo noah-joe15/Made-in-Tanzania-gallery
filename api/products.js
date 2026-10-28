@@ -28,7 +28,7 @@ export default async function handler(request, response) {
         // Use formidable to parse the file upload
         const form = formidable({
           keepExtensions: true,
-          maxFileSize: 10 * 1024 * 1024, // 10MB max
+          maxFileSize: 50 * 1024 * 1024, // 50MB max
         });
         
         const [fields, files] = await new Promise((resolve, reject) => {
