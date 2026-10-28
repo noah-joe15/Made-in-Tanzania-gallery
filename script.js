@@ -14,6 +14,7 @@ async function fetchProducts() {
         const response = await fetch(`${API_BASE_URL}/api/products`);
         if (!response.ok) throw new Error('Failed to fetch');
         galleryProducts = await response.json();
+        renderCategoryFilter(); // Generate category buttons dynamically
         renderGallery();
     } catch (error) {
         console.error('Failed to load gallery:', error);
@@ -22,6 +23,40 @@ async function fetchProducts() {
             grid.innerHTML = '<p style="text-align:center; grid-column: 1/-1; color: var(--text-light);">Failed to load products. Please try again later.</p>';
         }
     }
+}
+
+// ===== Generate Dynamic Category Filter =====
+function renderCategoryFilter() {
+    const filterContainer = document.getElementById('categoryFilter');
+    if (!filterContainer) return;
+
+    // Extract unique categories from products
+    const categories = [...new Set(galleryProducts.map(p => p.category).filter(Boolean))];
+    
+    // Sort categories alphabetically
+    categories.sort();
+
+    // Build buttons
+    let html = `<button class="filter-btn ${currentCategory === 'all' ? 'active' : ''}" data-category="all" data-en="All Products" data-sw="Bidhaa Zote">All Products</button>`;
+    
+    categories.forEach(cat => {
+        const catKey = cat.toLowerCase().replace(/\s+/g, '-');
+        const catDisplay = cat.charAt(0).toUpperCase() + cat.slice(1);
+        html += `<button class="filter-btn ${currentCategory === catKey ? 'active' : ''}" data-category="${catKey}">${catDisplay}</button>`;
+    });
+
+    filterContainer.innerHTML = html;
+
+    // Re-attach event listeners
+    filterContainer.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterContainer.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentCategory = btn.dataset.category;
+            visibleCount = 6;
+            renderGallery();
+        });
+    });
 }
 
 // ===== Language Switching =====
@@ -33,6 +68,7 @@ function setLanguage(lang) {
     document.querySelectorAll('[data-en]').forEach(el => {
         el.textContent = el.dataset[lang];
     });
+    renderCategoryFilter(); // Re-render to update category names if needed
     renderGallery();
 }
 
@@ -43,7 +79,7 @@ function renderGallery() {
 
     const filtered = currentCategory === 'all'
         ? galleryProducts
-        : galleryProducts.filter(p => p.category === currentCategory);
+        : galleryProducts.filter(p => p.category.toLowerCase().replace(/\s+/g, '-') === currentCategory);
 
     const toShow = filtered.slice(0, visibleCount);
 
@@ -59,7 +95,6 @@ function renderGallery() {
         let mediaContent = '';
         
         if (isYoutube) {
-            // YouTube thumbnail or placeholder
             const videoId = product.media_url.split('v=')[1]?.split('&')[0] || product.media_url.split('/').pop();
             mediaContent = `
                 <div style="position:relative;width:100%;height:100%;background:#000;">
@@ -70,13 +105,10 @@ function renderGallery() {
                 </div>
             `;
         } else if (isVideo) {
-            // Uploaded video with hover-to-play
             mediaContent = `<video src="${product.media_url}" muted loop playsinline onmouseover="this.play()" onmouseout="this.pause()" style="width:100%;height:100%;object-fit:cover;background:#000;"></video>`;
         } else if (product.media_url) {
-            // Uploaded image
             mediaContent = `<img src="${product.media_url}" alt="${product.title_en}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='<div class=\\'gallery-item-placeholder\\' style=\\'background:linear-gradient(135deg,#E8F5EE,#E8EFF8);display:flex;align-items:center;justify-content:center;\\'><svg viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'var(--green-primary)\\' stroke-width=\\'1.5\\' style=\\'width:48px;height:48px;\\'><rect x=\\'3\\' y=\\'3\\' width=\\'18\\' height=\\'18\\' rx=\\'2\\'/><circle cx=\\'8.5\\' cy=\\'8.5\\' r=\\'1.5\\'/><polyline points=\\'21 15 16 10 5 21\\'/></svg></div>'">`;
         } else {
-            // Fallback placeholder
             mediaContent = `<div class="gallery-item-placeholder" style="background:linear-gradient(135deg,#E8F5EE,#E8EFF8);display:flex;align-items:center;justify-content:center;height:100%;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="var(--green-primary)" stroke-width="1.5" style="width:48px;height:48px;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
             </div>`;
@@ -109,19 +141,8 @@ function getCategorySw(category) {
         'agriculture': 'Kilimo',
         'manufacturing': 'Uzalishaji'
     };
-    return map[category] || category;
+    return map[category.toLowerCase()] || category;
 }
-
-// ===== Category Filter =====
-document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentCategory = btn.dataset.category;
-        visibleCount = 6;
-        renderGallery();
-    });
-});
 
 // ===== Load More =====
 document.getElementById('loadMoreBtn')?.addEventListener('click', () => {
@@ -144,11 +165,9 @@ function openLightbox(id) {
     const content = document.querySelector('.lightbox-content');
     if (!content) return;
     
-    // Remove existing media container if any
     let mediaContainer = content.querySelector('.lightbox-media-container');
     if (mediaContainer) mediaContainer.remove();
     
-    // Create new media container
     mediaContainer = document.createElement('div');
     mediaContainer.className = 'lightbox-media-container';
     mediaContainer.style.cssText = 'width:100%;min-height:350px;display:flex;align-items:center;justify-content:center;background:var(--bg-light);border-radius:12px 12px 0 0;overflow:hidden;';
@@ -182,7 +201,6 @@ function closeLightbox() {
     
     const mediaContainer = document.querySelector('.lightbox-media-container');
     if (mediaContainer) {
-        // Stop any playing videos
         const video = mediaContainer.querySelector('video');
         if (video) {
             video.pause();
@@ -283,11 +301,6 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// ===== Initialize =====
-document.addEventListener('DOMContentLoaded', () => {
-    fetchProducts();
-});
-
 // ===== Mobile Pagination Logic =====
 (function() {
     const grid = document.getElementById('galleryGrid');
@@ -298,12 +311,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let items = [];
     let observer;
 
-    // Check for reduced motion preference
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const scrollBehavior = prefersReducedMotion ? 'auto' : 'smooth';
 
     function buildDots() {
-        // Clear existing
         dotsContainer.innerHTML = '';
         dots = [];
         items = Array.from(grid.querySelectorAll('.gallery-item'));
@@ -317,7 +328,6 @@ document.addEventListener('DOMContentLoaded', () => {
             inner.className = 'pagination-dot-inner';
             btn.appendChild(inner);
 
-            // Click to scroll
             btn.addEventListener('click', () => {
                 item.scrollIntoView({ 
                     behavior: scrollBehavior, 
@@ -329,14 +339,12 @@ document.addEventListener('DOMContentLoaded', () => {
             dots.push(btn);
         });
 
-        // Re-attach observer to new items
         setupObserver();
     }
 
     function setupObserver() {
         if (observer) observer.disconnect();
 
-        // Options to detect the item in the middle 40% of the viewport
         const options = {
             root: null,
             rootMargin: '-30% 0px -30% 0px', 
@@ -346,12 +354,9 @@ document.addEventListener('DOMContentLoaded', () => {
         observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    // Find index of this item
                     const index = items.indexOf(entry.target);
                     if (index !== -1) {
-                        // Remove active from all
                         dots.forEach(d => d.classList.remove('active'));
-                        // Add active to current
                         if (dots[index]) dots[index].classList.add('active');
                     }
                 }
@@ -361,16 +366,17 @@ document.addEventListener('DOMContentLoaded', () => {
         items.forEach(item => observer.observe(item));
     }
 
-    // 1. Initial Build
-    // Use a small timeout to ensure grid is rendered
     setTimeout(buildDots, 500);
 
-    // 2. Watch for changes (Load More / Filter)
     const gridObserver = new MutationObserver((mutations) => {
-        // Debounce slightly to prevent rapid firing
         clearTimeout(window.buildDotsTimeout);
         window.buildDotsTimeout = setTimeout(buildDots, 300);
     });
 
     gridObserver.observe(grid, { childList: true, subtree: true });
 })();
+
+// ===== Initialize =====
+document.addEventListener('DOMContentLoaded', () => {
+    fetchProducts();
+});
