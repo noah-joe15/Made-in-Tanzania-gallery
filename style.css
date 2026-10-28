@@ -829,3 +829,55 @@ img, video, svg {
         transform: none !important;
     }
 }
+
+/* ===== Mobile Pagination Dots ===== */
+.gallery-pagination {
+    display: none; /* Hidden by default (desktop) */
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 20px 0;
+    margin-top: 10px;
+}
+
+@media (max-width: 768px) {
+    .gallery-pagination {
+        display: flex;
+    }
+}
+
+.pagination-dot {
+    background: transparent;
+    border: none;
+    padding: 0;
+    width: 44px; /* Minimum tappable area */
+    height: 44px; /* Minimum tappable area */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.pagination-dot-inner {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.pagination-dot.active .pagination-dot-inner {
+    background-color: var(--green-primary);
+    transform: scale(1.5);
+}
+
+/* Respect reduced motion for the scroll action (handled in JS, but good for CSS transitions too) */
+@media (prefers-reduced-motion: reduce) {
+    .pagination-dot, .pagination-dot-inner {
+        transition: none;
+    }
+}
