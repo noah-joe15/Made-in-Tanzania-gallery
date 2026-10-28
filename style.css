@@ -1382,3 +1382,72 @@ img, video, svg {
   outline: 3px solid var(--green-primary);
   outline-offset: 2px;
 }
+
+/* ===== FIX: Mobile Gallery Overflow & Spacing (append at end) ===== */
+
+@media (max-width: 768px) {
+  /* FIX 1: Horizontal Overflow */
+  /* The problem: gallery-section had padding removed (set to 0) but gallery-grid 
+     has negative margin that bleeds beyond the viewport. 
+     Solution: Keep section padding, make grid negative margin match it exactly,
+     and use overflow-x: clip to contain the bleed. */
+  
+  .gallery-section {
+    padding-left: clamp(12px, 4vw, 24px) !important;
+    padding-right: clamp(12px, 4vw, 24px) !important;
+    overflow-x: hidden; /* Fallback for older browsers */
+    overflow-x: clip; /* Modern browsers - contains the negative margin bleed */
+  }
+  
+  .gallery-grid {
+    /* Negative margin must exactly match section padding to bleed edge-to-edge */
+    margin-left: calc(-1 * clamp(12px, 4vw, 24px));
+    margin-right: calc(-1 * clamp(12px, 4vw, 24px));
+    width: calc(100% + (2 * clamp(12px, 4vw, 24px)));
+  }
+  
+  /* FIX 2: Excess Vertical Gap */
+  /* The problem: Multiple spacing elements stacking:
+     - .gallery-section padding-bottom: ~40px
+     - .gallery-grid margin-bottom: 32px
+     - .gallery-pagination padding + margin: ~30px
+     - .load-more-container (empty but taking space)
+     - .register-section padding-top: ~24px
+     Total: ~126px (way too much!)
+     Solution: Reduce each element's spacing to target 24-32px total. */
+  
+  .gallery-section {
+    padding-bottom: 16px !important; /* Reduced from clamp(40px, 8vw, 60px) */
+  }
+  
+  .gallery-grid {
+    margin-bottom: 8px; /* Reduced from 32px */
+  }
+  
+  /* Pagination dots: keep 44px tap area but reduce visual spacing */
+  .gallery-pagination {
+    margin-top: 0; /* Remove extra margin */
+    padding: 8px 0 12px; /* Reduced from 20px 0 */
+  }
+  
+  /* Hide empty load-more container (takes up space when no more items) */
+  .load-more-container:empty,
+  .load-more-container:not(:has(button:not([style*="display: none"]))) {
+    display: none;
+    margin: 0;
+    padding: 0;
+    height: 0;
+  }
+  
+  /* Reduce register section top padding */
+  .register-section {
+    padding-top: 16px !important; /* Reduced from clamp(24px, 5vw, 40px) */
+  }
+  
+  /* Ensure dots don't add extra height but keep tap area */
+  .pagination-dot {
+    width: 44px;
+    height: 44px;
+    padding: 0; /* Remove padding that adds height */
+  }
+}
