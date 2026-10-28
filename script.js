@@ -295,3 +295,321 @@ document.addEventListener('keydown', (e) => {
 document.addEventListener('DOMContentLoaded', () => {
     fetchProducts();
 });
+
+// ===== Instagram-Style Lightbox Navigation (Mobile) =====
+(function() {
+  // Only activate on mobile
+  if (window.innerWidth > 768) return;
+  
+  let currentIndex = 0;
+  let filteredProducts = [];
+  let touchStartY = 0;
+  let touchStartX = 0;
+  let lastTouchX = 0;
+  
+  const lightbox = document.getElementById('lightbox');
+  const lightboxContent = lightbox ? lightbox.querySelector('.lightbox-content') : null;
+  const closeBtn = document.getElementById('lightboxClose') || lightbox?.querySelector('.lightbox-close');
+  
+  // Check if device supports touch
+  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  
+  // Create top bar elements if they don't exist
+  function createTopBar() {
+    if (!lightbox) return;
+    
+    // Check if top bar already exists
+    if (lightbox.querySelector('.lightbox-top-bar')) return;
+    
+    const topBar = document.createElement('div');
+    topBar.className = 'lightbox-top-bar';
+    topBar.innerHTML = `
+      <button class="lightbox-close" aria-label="Close viewer">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+      </button>
+      <span class="lightbox-category-title"></span>
+      <span class="lightbox-position">1 / 1</span>
+      <button class="lightbox-share" aria-label="Share" style="display: none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="18" cy="5" r="3"/>
+          <circle cx="6" cy="12" r="3"/>
+          <circle cx="18" cy="19" r="3"/>
+          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+          <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+        </svg>
+      </button>
+    `;
+    
+    // Insert before content
+    const content = lightbox.querySelector('.lightbox-content');
+    if (content) {
+      lightbox.insertBefore(topBar, content);
+    }
+    
+    // Close button handler
+    const newCloseBtn = topBar.querySelector('.lightbox-close');
+    newCloseBtn.addEventListener('click', closeLightbox);
+    
+    // Share button handler
+    const shareBtn = topBar.querySelector('.lightbox-share');
+    shareBtn.addEventListener('click', handleShare);
+    
+    // Check if share is supported
+    if (navigator.share) {
+      shareBtn.style.display = 'flex';
+    }
+  }
+  
+  // Handle share
+  async function handleShare() {
+    const product = filteredProducts[currentIndex];
+    if (!product) return;
+    
+    try {
+      await navigator.share({
+        title: product.title_en,
+        text: `${product.title_en} - ${product.category}`,
+        url: window.location.href
+      });
+    } catch (err) {
+      console.log('Share cancelled or failed:', err);
+    }
+  }
+  
+  // Update position indicator
+  function updatePosition() {
+    const positionEl = lightbox?.querySelector('.lightbox-position');
+    const categoryEl = lightbox?.querySelector('.lightbox-category-title');
+    
+    if (positionEl) {
+      positionEl.textContent = `${currentIndex + 1} / ${filteredProducts.length}`;
+    }
+    
+    if (categoryEl && filteredProducts[currentIndex]) {
+      categoryEl.textContent = filteredProducts[currentIndex].category;
+    }
+  }
+  
+  // Navigate to next/previous
+  function navigate(direction) {
+    const newIndex = currentIndex + direction;
+    
+    if (newIndex < 0 || newIndex >= filteredProducts.length) return;
+    
+    // Animate slide
+    const mediaContainer = lightbox?.querySelector('.lightbox-media-container');
+    const caption = lightbox?.querySelector('.lightbox-caption');
+    
+    if (mediaContainer && caption) {
+      mediaContainer.style.opacity = '0';
+      caption.style.opacity = '0';
+      
+      setTimeout(() => {
+        currentIndex = newIndex;
+        updateLightboxContent();
+        updatePosition();
+        
+        mediaContainer.style.opacity = '1';
+        caption.style.opacity = '1';
+      }, 200);
+    }
+  }
+  
+  // Update lightbox content for current product
+  function updateLightboxContent() {
+    const product = filteredProducts[currentIndex];
+    if (!product) return;
+    
+    const mediaContainer = lightbox?.querySelector('.lightbox-media-container');
+    const caption = lightbox?.querySelector('.lightbox-caption');
+    
+    if (!mediaContainer || !caption) return;
+    
+    // Update title
+    const titleEl = caption.querySelector('.lightbox-title');
+    if (titleEl) {
+      titleEl.textContent = currentLanguage === 'sw' ? product.title_sw : product.title_en;
+    }
+    
+    // Update category
+    const categoryEl = caption.querySelector('.lightbox-category');
+    if (categoryEl) {
+      categoryEl.textContent = currentLanguage === 'sw' ? getCategorySw(product.category) : product.category;
+    }
+    
+    // Update description
+    const descEl = caption.querySelector('.lightbox-description');
+    if (descEl) {
+      descEl.textContent = currentLanguage === 'sw' ? product.description_sw : product.description_en;
+    }
+    
+    // Update media
+    const isYoutube = product.media_type === 'youtube';
+    const isVideo = product.media_type === 'video';
+    
+    if (isYoutube) {
+      const videoId = product.media_url.split('v=')[1]?.split('&')[0] || product.media_url.split('/').pop();
+      mediaContainer.innerHTML = `<iframe width="100%" height="400" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="border-radius: 8px;"></iframe>`;
+    } else if (isVideo) {
+      mediaContainer.innerHTML = `<video src="${product.media_url}" controls autoplay style="border-radius: 8px; max-height: 70dvh;"></video>`;
+    } else if (product.media_url) {
+      mediaContainer.innerHTML = `<img src="${product.media_url}" alt="${product.title_en}" style="border-radius: 8px;" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'gallery-item-placeholder\\'><svg viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'currentColor\\' stroke-width=\\'1.5\\' style=\\'width:64px;height:64px;opacity:0.5;\\'><rect x=\\'3\\' y=\\'3\\' width=\\'18\\' height=\\'18\\' rx=\\'2\\'/><circle cx=\\'8.5\\' cy=\\'8.5\\' r=\\'1.5\\'/><polyline points=\\'21 15 16 10 5 21\\'/></svg></div>'">`;
+    } else {
+      mediaContainer.innerHTML = `<div class="gallery-item-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:64px;height:64px;opacity:0.5;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`;
+    }
+  }
+  
+  // Touch handlers for swipe
+  function handleTouchStart(e) {
+    touchStartY = e.touches[0].clientY;
+    touchStartX = e.touches[0].clientX;
+    lastTouchX = touchStartX;
+  }
+  
+  function handleTouchMove(e) {
+    if (!touchStartX || !touchStartY) return;
+    
+    const touchX = e.touches[0].clientX;
+    const touchY = e.touches[0].clientY;
+    const diffX = touchX - lastTouchX;
+    const diffY = touchY - touchStartY;
+    
+    // Horizontal swipe (left/right)
+    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 10) {
+      e.preventDefault();
+    }
+    
+    lastTouchX = touchX;
+  }
+  
+  function handleTouchEnd(e) {
+    if (!touchStartX || !touchStartY) return;
+    
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchEndY = e.changedTouches[0].clientY;
+    const diffX = touchEndX - touchStartX;
+    const diffY = touchEndY - touchStartY;
+    
+    // Swipe down to close (more than 80px)
+    if (diffY > 80 && Math.abs(diffY) > Math.abs(diffX)) {
+      closeLightbox();
+      return;
+    }
+    
+    // Swipe left (next) or right (previous)
+    if (Math.abs(diffX) > 80 && Math.abs(diffX) > Math.abs(diffY)) {
+      if (diffX < -50) {
+        navigate(1); // Swipe left - next
+      } else if (diffX > 50) {
+        navigate(-1); // Swipe right - previous
+      }
+    }
+    
+    touchStartX = 0;
+    touchStartY = 0;
+  }
+  
+  // Keyboard navigation
+  function handleKeydown(e) {
+    if (!lightbox?.classList.contains('active')) return;
+    
+    if (e.key === 'ArrowLeft') {
+      navigate(-1);
+    } else if (e.key === 'ArrowRight') {
+      navigate(1);
+    } else if (e.key === 'Escape') {
+      closeLightbox();
+    }
+  }
+  
+  // Override openLightbox for mobile
+  const originalOpenLightbox = window.openLightbox;
+  window.openLightbox = function(id) {
+    if (window.innerWidth > 768) {
+      // Desktop: use original function
+      originalOpenLightbox(id);
+      return;
+    }
+    
+    // Mobile: Instagram-style viewer
+    const product = galleryProducts.find(p => p.id === id);
+    if (!product) return;
+    
+    // Get current filtered products
+    const filtered = currentCategory === 'all'
+      ? galleryProducts
+      : galleryProducts.filter(p => p.category.toLowerCase().replace(/\s+/g, '-') === currentCategory);
+    
+    filteredProducts = filtered;
+    currentIndex = filteredProducts.findIndex(p => p.id === id);
+    
+    if (!lightbox) return;
+    
+    // Create top bar if needed
+    createTopBar();
+    
+    // Update content
+    updateLightboxContent();
+    updatePosition();
+    
+    // Show lightbox
+    lightbox.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    // Add touch listeners
+    if (isTouchDevice && lightboxContent) {
+      lightboxContent.addEventListener('touchstart', handleTouchStart, { passive: true });
+      lightboxContent.addEventListener('touchmove', handleTouchMove, { passive: false });
+      lightboxContent.addEventListener('touchend', handleTouchEnd, { passive: true });
+    }
+    
+    // Add keyboard listener
+    document.addEventListener('keydown', handleKeydown);
+    
+    // Store reference to close function
+    lightbox.dataset.originalOpener = 'instagram';
+  };
+  
+  // Override closeLightbox for mobile
+  const originalCloseLightbox = window.closeLightbox;
+  window.closeLightbox = function() {
+    if (!lightbox) return;
+    
+    // Check if this is the Instagram-style lightbox
+    if (lightbox.dataset.originalOpener === 'instagram') {
+      lightbox.classList.remove('active');
+      document.body.style.overflow = '';
+      
+      // Remove touch listeners
+      if (lightboxContent) {
+        lightboxContent.removeEventListener('touchstart', handleTouchStart);
+        lightboxContent.removeEventListener('touchmove', handleTouchMove);
+        lightboxContent.removeEventListener('touchend', handleTouchEnd);
+      }
+      
+      // Remove keyboard listener
+      document.removeEventListener('keydown', handleKeydown);
+      
+      // Return focus to gallery
+      const galleryGrid = document.getElementById('galleryGrid');
+      if (galleryGrid && filteredProducts[currentIndex]) {
+        const items = galleryGrid.querySelectorAll('.gallery-item');
+        if (items[currentIndex]) {
+          items[currentIndex].focus();
+        }
+      }
+    } else {
+      // Desktop: use original function
+      originalCloseLightbox();
+    }
+  };
+  
+  // Initialize on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      // Top bar will be created when lightbox opens
+    });
+  }
+})();
