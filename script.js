@@ -287,3 +287,90 @@ document.addEventListener('keydown', (e) => {
 document.addEventListener('DOMContentLoaded', () => {
     fetchProducts();
 });
+
+// ===== Mobile Pagination Logic =====
+(function() {
+    const grid = document.getElementById('galleryGrid');
+    const dotsContainer = document.getElementById('galleryPagination');
+    if (!grid || !dotsContainer) return;
+
+    let dots = [];
+    let items = [];
+    let observer;
+
+    // Check for reduced motion preference
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const scrollBehavior = prefersReducedMotion ? 'auto' : 'smooth';
+
+    function buildDots() {
+        // Clear existing
+        dotsContainer.innerHTML = '';
+        dots = [];
+        items = Array.from(grid.querySelectorAll('.gallery-item'));
+
+        items.forEach((item, index) => {
+            const btn = document.createElement('button');
+            btn.className = 'pagination-dot';
+            btn.setAttribute('aria-label', `Go to item ${index + 1}`);
+            
+            const inner = document.createElement('div');
+            inner.className = 'pagination-dot-inner';
+            btn.appendChild(inner);
+
+            // Click to scroll
+            btn.addEventListener('click', () => {
+                item.scrollIntoView({ 
+                    behavior: scrollBehavior, 
+                    block: 'center' 
+                });
+            });
+
+            dotsContainer.appendChild(btn);
+            dots.push(btn);
+        });
+
+        // Re-attach observer to new items
+        setupObserver();
+    }
+
+    function setupObserver() {
+        if (observer) observer.disconnect();
+
+        // Options to detect the item in the middle 40% of the viewport
+        const options = {
+            root: null,
+            rootMargin: '-30% 0px -30% 0px', 
+            threshold: 0
+        };
+
+        observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Find index of this item
+                    const index = items.indexOf(entry.target);
+                    if (index !== -1) {
+                        // Remove active from all
+                        dots.forEach(d => d.classList.remove('active'));
+                        // Add active to current
+                        if (dots[index]) dots[index].classList.add('active');
+                    }
+                }
+            });
+        }, options);
+
+        items.forEach(item => observer.observe(item));
+    }
+
+    // 1. Initial Build
+    // Use a small timeout to ensure grid is rendered
+    setTimeout(buildDots, 500);
+
+    // 2. Watch for changes (Load More / Filter)
+    const gridObserver = new MutationObserver((mutations) => {
+        // Debounce slightly to prevent rapid firing
+        clearTimeout(window.buildDotsTimeout);
+        window.buildDotsTimeout = setTimeout(buildDots, 300);
+    });
+
+    gridObserver.observe(grid, { childList: true, subtree: true });
+})();
