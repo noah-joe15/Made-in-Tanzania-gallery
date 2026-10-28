@@ -17,7 +17,7 @@ const productsTableBody = document.getElementById('productsTableBody');
 // ===== Sidebar Navigation =====
 function showSection(sectionName) {
     // Hide all sections
-    document.querySelectorAll('.admin-section').forEach(section => {
+    document.querySelectorAll('.content-section').forEach(section => {
         section.classList.remove('active');
     });
     
@@ -35,20 +35,34 @@ function showSection(sectionName) {
         }
     });
 
-    // Close sidebar on mobile after selection (if you add a mobile toggle button later)
-    const sidebar = document.querySelector('.admin-sidebar');
+    // Close sidebar on mobile after selection
+    const sidebar = document.querySelector('.sidebar');
     if (sidebar && window.innerWidth <= 1024) {
         sidebar.classList.remove('open');
     }
 }
 
-// Mobile Sidebar Toggle (Optional: add a button with onclick="toggleSidebar()" if needed)
+// Mobile Sidebar Toggle
 function toggleSidebar() {
-    const sidebar = document.querySelector('.admin-sidebar');
+    const sidebar = document.querySelector('.sidebar');
     if (sidebar) {
         sidebar.classList.toggle('open');
     }
 }
+
+// Close sidebar when clicking outside on mobile
+document.addEventListener('click', (e) => {
+    const sidebar = document.querySelector('.sidebar');
+    const menuToggle = document.getElementById('menuToggle');
+    
+    if (window.innerWidth <= 1024 && 
+        sidebar && 
+        !sidebar.contains(e.target) && 
+        menuToggle && 
+        !menuToggle.contains(e.target)) {
+        sidebar.classList.remove('open');
+    }
+});
 
 // ===== Dynamic Category Suggestions =====
 async function loadCategorySuggestions() {
@@ -90,11 +104,11 @@ function toggleMediaInput() {
 mediaFileInput.addEventListener('change', (e) => {
     if (e.target.files.length > 0) {
         fileNameDisplay.textContent = e.target.files[0].name;
-        fileNameDisplay.style.color = 'var(--clay-primary)';
+        fileNameDisplay.style.color = 'var(--primary)';
         fileNameDisplay.style.fontWeight = '600';
     } else {
         fileNameDisplay.textContent = 'Click to select or drag file here';
-        fileNameDisplay.style.color = 'var(--clay-text-muted)';
+        fileNameDisplay.style.color = 'var(--text-muted)';
         fileNameDisplay.style.fontWeight = '400';
     }
 });
@@ -151,7 +165,7 @@ productForm.addEventListener('submit', async (e) => {
         statusMessage.className = 'status-message success';
         productForm.reset();
         fileNameDisplay.textContent = 'Click to select or drag file here';
-        fileNameDisplay.style.color = 'var(--clay-text-muted)';
+        fileNameDisplay.style.color = 'var(--text-muted)';
         fileNameDisplay.style.fontWeight = '400';
         toggleMediaInput();
         
@@ -192,15 +206,15 @@ async function loadProducts() {
 
         productsTableBody.innerHTML = data.map(product => `
             <tr>
-                <td>
+                <td data-label="Media">
                     ${product.media_type === 'youtube' 
-                        ? '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--clay-danger)" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>' 
+                        ? '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>' 
                         : `<img src="${product.media_url}" class="media-preview" alt="Preview" onerror="this.style.display='none'">`
                     }
                 </td>
-                <td><strong>${product.title_en}</strong><br><small style="color: var(--clay-text-muted);">${product.title_sw}</small></td>
-                <td><span style="background: var(--clay-surface); padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; text-transform: capitalize; box-shadow: var(--shadow-dark), var(--shadow-light);">${product.category}</span></td>
-                <td>
+                <td data-label="Title"><strong>${product.title_en}</strong><br><small style="color: var(--text-muted);">${product.title_sw}</small></td>
+                <td data-label="Category"><span style="background: var(--surface); padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; text-transform: capitalize; border: 1px solid var(--border);">${product.category}</span></td>
+                <td data-label="Actions">
                     <button class="btn btn-danger" onclick="deleteProduct(${product.id}, '${product.media_type}', '${product.media_url}')">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                         Delete
@@ -210,7 +224,7 @@ async function loadProducts() {
         `).join('');
     } catch (error) {
         console.error('Error loading products:', error);
-        productsTableBody.innerHTML = `<tr><td colspan="4" class="loading-state" style="color: var(--clay-danger);">Error loading data.</td></tr>`;
+        productsTableBody.innerHTML = `<tr><td colspan="4" class="loading-state" style="color: var(--danger);">Error loading data.</td></tr>`;
     }
 }
 
@@ -262,12 +276,12 @@ async function loadRegistrations() {
 
         tbody.innerHTML = data.map(reg => `
             <tr>
-                <td><strong>${reg.full_name}</strong></td>
-                <td>${reg.phone}</td>
-                <td>${reg.business_name}</td>
-                <td>${reg.region}</td>
-                <td><small>${new Date(reg.created_at).toLocaleDateString()}</small></td>
-                <td>
+                <td data-label="Full Name"><strong>${reg.full_name}</strong></td>
+                <td data-label="Phone">${reg.phone}</td>
+                <td data-label="Business">${reg.business_name}</td>
+                <td data-label="Region">${reg.region}</td>
+                <td data-label="Date"><small>${new Date(reg.created_at).toLocaleDateString()}</small></td>
+                <td data-label="Actions">
                     <button class="btn btn-danger" onclick="deleteRegistration(${reg.id})">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                         Delete
@@ -277,7 +291,7 @@ async function loadRegistrations() {
         `).join('');
     } catch (error) {
         console.error('Error loading registrations:', error);
-        tbody.innerHTML = `<tr><td colspan="6" class="loading-state" style="color: var(--clay-danger);">Error loading data.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="loading-state" style="color: var(--danger);">Error loading data.</td></tr>`;
     }
 }
 
@@ -303,6 +317,9 @@ async function deleteRegistration(id) {
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
+    // Attach menu toggle listener
+    document.getElementById('menuToggle')?.addEventListener('click', toggleSidebar);
+    
     toggleMediaInput();
     loadProducts();
     loadCategorySuggestions(); // Load initial category suggestions for the datalist
