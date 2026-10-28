@@ -881,3 +881,148 @@ img, video, svg {
         transition: none;
     }
 }
+
+/* ===== Admin Sidebar Layout ===== */
+.admin-wrapper {
+    display: flex;
+    min-height: 100vh;
+    background: var(--clay-bg);
+}
+
+.admin-sidebar {
+    width: 280px;
+    background: var(--clay-white);
+    border-right: 1px solid var(--clay-border);
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    overflow-y: auto;
+}
+
+.sidebar-header {
+    padding: 24px;
+    border-bottom: 1px solid var(--clay-border);
+}
+
+.sidebar-header .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.sidebar-header .logo-icon {
+    width: 48px;
+    height: 48px;
+}
+
+.sidebar-header h1 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--clay-primary);
+    margin: 0;
+}
+
+.sidebar-header p {
+    font-size: 12px;
+    color: var(--clay-text-muted);
+    margin: 0;
+}
+
+.sidebar-nav {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: var(--radius-md);
+    color: var(--clay-text-medium);
+    font-weight: 500;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.nav-link:hover {
+    background: var(--clay-surface);
+    color: var(--clay-primary);
+}
+
+.nav-link.active {
+    background: var(--clay-primary);
+    color: white;
+}
+
+.admin-main {
+    flex: 1;
+    margin-left: 280px;
+    padding: 40px;
+    overflow-y: auto;
+}
+
+.admin-section {
+    display: none;
+}
+
+.admin-section.active {
+    display: block;
+}
+
+.section-header {
+    margin-bottom: 24px;
+}
+
+.section-header h2 {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--clay-text-dark);
+}
+
+/* Responsive Sidebar */
+@media (max-width: 1024px) {
+    .admin-sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+    
+    .admin-sidebar.open {
+        transform: translateX(0);
+    }
+    
+    .admin-main {
+        margin-left: 0;
+        padding: 24px;
+    }
+}
+
+/* Mobile menu toggle (add a button in HTML if needed) */
+.menu-toggle {
+    display: none;
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 101;
+    background: var(--clay-primary);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+}
+
+@media (max-width: 1024px) {
+    .menu-toggle {
+        display: block;
+    }
+}
