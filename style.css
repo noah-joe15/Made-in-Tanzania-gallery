@@ -1471,3 +1471,36 @@ img, video, svg {
     outline: 3px solid var(--blue-primary);
     outline-offset: 2px;
 }
+
+/* ===== Dual Logo Layout ===== */
+.logo-section {
+    gap: 16px; /* Space between the two logos */
+}
+
+/* Remove the white box background for the second logo so it looks clean */
+.secondary-logo-box {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    display: flex;
+    align-items: center;
+}
+
+/* Size the new logo to match the height of the Tantrade logo */
+.secondary-logo {
+    width: auto !important;
+    height: 50px; /* Adjust this number if you want it bigger or smaller */
+    max-width: 150px;
+    object-fit: contain;
+}
+
+/* On very small screens, stack them or hide the text part if needed */
+@media (max-width: 480px) {
+    .secondary-logo {
+        height: 40px;
+    }
+    .logo-section {
+        gap: 8px;
+    }
+}
