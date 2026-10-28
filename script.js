@@ -3,6 +3,16 @@
 // ==========================================
 const API_BASE_URL = '';
 
+// ===== Image Optimization Utility =====
+// Automatically optimizes images using Vercel's built-in service
+function optimizeImage(imageUrl, width = 800, quality = 75) {
+  if (!imageUrl || imageUrl.includes('youtube') || imageUrl.includes('ytimg')) {
+    return imageUrl;
+  }
+  const encodedUrl = encodeURIComponent(imageUrl);
+  return `/_vercel/image?url=${encodedUrl}&w=${width}&q=${quality}`;
+}
+
 let currentLanguage = 'en';
 let currentCategory = 'all';
 let visibleCount = 6;
@@ -102,7 +112,9 @@ function renderGallery() {
         } else if (isVideo) {
             mediaContent = `<video src="${product.media_url}" muted loop playsinline onmouseover="this.play()" onmouseout="this.pause()" style="width:100%;height:100%;object-fit:cover;background:#000;"></video>`;
         } else if (product.media_url) {
-            mediaContent = `<img src="${product.media_url}" alt="${product.title_en}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='<div class=\\'gallery-item-placeholder\\' style=\\'background:linear-gradient(135deg,#E8F5EE,#E8EFF8);display:flex;align-items:center;justify-content:center;\\'><svg viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'var(--green-primary)\\' stroke-width=\\'1.5\\' style=\\'width:48px;height:48px;\\'><rect x=\\'3\\' y=\\'3\\' width=\\'18\\' height=\\'18\\' rx=\\'2\\'/><circle cx=\\'8.5\\' cy=\\'8.5\\' r=\\'1.5\\'/><polyline points=\\'21 15 16 10 5 21\\'/></svg></div>'">`;
+            // OPTIMIZED: Serves a 600px wide, 75% quality WebP/AVIF image
+            const optimizedUrl = optimizeImage(product.media_url, 600, 75);
+            mediaContent = `<img src="${optimizedUrl}" alt="${product.title_en}" style="width:100%;height:100%;object-fit:cover;" loading="lazy" decoding="async" onerror="this.parentElement.innerHTML='<div class=\\'gallery-item-placeholder\\' style=\\'background:linear-gradient(135deg,#E8F5EE,#E8EFF8);display:flex;align-items:center;justify-content:center;\\'><svg viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'var(--green-primary)\\' stroke-width=\\'1.5\\' style=\\'width:48px;height:48px;\\'><rect x=\\'3\\' y=\\'3\\' width=\\'18\\' height=\\'18\\' rx=\\'2\\'/><circle cx=\\'8.5\\' cy=\\'8.5\\' r=\\'1.5\\'/><polyline points=\\'21 15 16 10 5 21\\'/></svg></div>'">`;
         } else {
             mediaContent = `<div class="gallery-item-placeholder" style="background:linear-gradient(135deg,#E8F5EE,#E8EFF8);display:flex;align-items:center;justify-content:center;height:100%;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="var(--green-primary)" stroke-width="1.5" style="width:48px;height:48px;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
@@ -176,7 +188,9 @@ function openLightbox(id) {
     } else if (isVideo) {
         mediaContainer.innerHTML = `<video src="${product.media_url}" controls autoplay style="width:100%;height:450px;border-radius:12px 12px 0 0;background:#000;"></video>`;
     } else if (product.media_url) {
-        mediaContainer.innerHTML = `<img src="${product.media_url}" alt="${product.title_en}" style="width:100%;height:450px;object-fit:cover;border-radius:12px 12px 0 0;" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\\'padding:40px;text-align:center;color:var(--text-light);\\'>Failed to load image</div>'">`;
+        // OPTIMIZED: Serves a 1200px wide, 80% quality image for lightbox
+        const optimizedUrl = optimizeImage(product.media_url, 1200, 80);
+        mediaContainer.innerHTML = `<img src="${optimizedUrl}" alt="${product.title_en}" style="width:100%;height:450px;object-fit:cover;border-radius:12px 12px 0 0;" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\\'padding:40px;text-align:center;color:var(--text-light);\\'>Failed to load image</div>'">`;
     } else {
         mediaContainer.innerHTML = '<div style="padding:40px;text-align:center;color:var(--text-light);">No media available</div>';
     }
@@ -291,14 +305,8 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// ===== Initialize =====
-document.addEventListener('DOMContentLoaded', () => {
-    fetchProducts();
-});
-
 // ===== Instagram-Style Lightbox Navigation (Mobile) =====
 (function() {
-  // Only activate on mobile
   if (window.innerWidth > 768) return;
   
   let currentIndex = 0;
@@ -309,16 +317,11 @@ document.addEventListener('DOMContentLoaded', () => {
   
   const lightbox = document.getElementById('lightbox');
   const lightboxContent = lightbox ? lightbox.querySelector('.lightbox-content') : null;
-  const closeBtn = document.getElementById('lightboxClose') || lightbox?.querySelector('.lightbox-close');
   
-  // Check if device supports touch
   const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
   
-  // Create top bar elements if they don't exist
   function createTopBar() {
     if (!lightbox) return;
-    
-    // Check if top bar already exists
     if (lightbox.querySelector('.lightbox-top-bar')) return;
     
     const topBar = document.createElement('div');
@@ -342,31 +345,25 @@ document.addEventListener('DOMContentLoaded', () => {
       </button>
     `;
     
-    // Insert before content
     const content = lightbox.querySelector('.lightbox-content');
     if (content) {
       lightbox.insertBefore(topBar, content);
     }
     
-    // Close button handler
     const newCloseBtn = topBar.querySelector('.lightbox-close');
     newCloseBtn.addEventListener('click', closeLightbox);
     
-    // Share button handler
     const shareBtn = topBar.querySelector('.lightbox-share');
     shareBtn.addEventListener('click', handleShare);
     
-    // Check if share is supported
     if (navigator.share) {
       shareBtn.style.display = 'flex';
     }
   }
   
-  // Handle share
   async function handleShare() {
     const product = filteredProducts[currentIndex];
     if (!product) return;
-    
     try {
       await navigator.share({
         title: product.title_en,
@@ -378,27 +375,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
   
-  // Update position indicator
   function updatePosition() {
     const positionEl = lightbox?.querySelector('.lightbox-position');
     const categoryEl = lightbox?.querySelector('.lightbox-category-title');
-    
     if (positionEl) {
       positionEl.textContent = `${currentIndex + 1} / ${filteredProducts.length}`;
     }
-    
     if (categoryEl && filteredProducts[currentIndex]) {
       categoryEl.textContent = filteredProducts[currentIndex].category;
     }
   }
   
-  // Navigate to next/previous
   function navigate(direction) {
     const newIndex = currentIndex + direction;
-    
     if (newIndex < 0 || newIndex >= filteredProducts.length) return;
     
-    // Animate slide
     const mediaContainer = lightbox?.querySelector('.lightbox-media-container');
     const caption = lightbox?.querySelector('.lightbox-caption');
     
@@ -410,42 +401,29 @@ document.addEventListener('DOMContentLoaded', () => {
         currentIndex = newIndex;
         updateLightboxContent();
         updatePosition();
-        
         mediaContainer.style.opacity = '1';
         caption.style.opacity = '1';
       }, 200);
     }
   }
   
-  // Update lightbox content for current product
   function updateLightboxContent() {
     const product = filteredProducts[currentIndex];
     if (!product) return;
     
     const mediaContainer = lightbox?.querySelector('.lightbox-media-container');
     const caption = lightbox?.querySelector('.lightbox-caption');
-    
     if (!mediaContainer || !caption) return;
     
-    // Update title
     const titleEl = caption.querySelector('.lightbox-title');
-    if (titleEl) {
-      titleEl.textContent = currentLanguage === 'sw' ? product.title_sw : product.title_en;
-    }
+    if (titleEl) titleEl.textContent = currentLanguage === 'sw' ? product.title_sw : product.title_en;
     
-    // Update category
     const categoryEl = caption.querySelector('.lightbox-category');
-    if (categoryEl) {
-      categoryEl.textContent = currentLanguage === 'sw' ? getCategorySw(product.category) : product.category;
-    }
+    if (categoryEl) categoryEl.textContent = currentLanguage === 'sw' ? getCategorySw(product.category) : product.category;
     
-    // Update description
     const descEl = caption.querySelector('.lightbox-description');
-    if (descEl) {
-      descEl.textContent = currentLanguage === 'sw' ? product.description_sw : product.description_en;
-    }
+    if (descEl) descEl.textContent = currentLanguage === 'sw' ? product.description_sw : product.description_en;
     
-    // Update media
     const isYoutube = product.media_type === 'youtube';
     const isVideo = product.media_type === 'video';
     
@@ -455,13 +433,14 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (isVideo) {
       mediaContainer.innerHTML = `<video src="${product.media_url}" controls autoplay style="border-radius: 8px; max-height: 70dvh;"></video>`;
     } else if (product.media_url) {
-      mediaContainer.innerHTML = `<img src="${product.media_url}" alt="${product.title_en}" style="border-radius: 8px;" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'gallery-item-placeholder\\'><svg viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'currentColor\\' stroke-width=\\'1.5\\' style=\\'width:64px;height:64px;opacity:0.5;\\'><rect x=\\'3\\' y=\\'3\\' width=\\'18\\' height=\\'18\\' rx=\\'2\\'/><circle cx=\\'8.5\\' cy=\\'8.5\\' r=\\'1.5\\'/><polyline points=\\'21 15 16 10 5 21\\'/></svg></div>'">`;
+      // OPTIMIZED: Serves a 1200px wide, 80% quality image for mobile lightbox
+      const optimizedUrl = optimizeImage(product.media_url, 1200, 80);
+      mediaContainer.innerHTML = `<img src="${optimizedUrl}" alt="${product.title_en}" style="border-radius: 8px;" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'gallery-item-placeholder\\'><svg viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'currentColor\\' stroke-width=\\'1.5\\' style=\\'width:64px;height:64px;opacity:0.5;\\'><rect x=\\'3\\' y=\\'3\\' width=\\'18\\' height=\\'18\\' rx=\\'2\\'/><circle cx=\\'8.5\\' cy=\\'8.5\\' r=\\'1.5\\'/><polyline points=\\'21 15 16 10 5 21\\'/></svg></div>'">`;
     } else {
       mediaContainer.innerHTML = `<div class="gallery-item-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:64px;height:64px;opacity:0.5;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`;
     }
   }
   
-  // Touch handlers for swipe
   function handleTouchStart(e) {
     touchStartY = e.touches[0].clientY;
     touchStartX = e.touches[0].clientX;
@@ -470,74 +449,52 @@ document.addEventListener('DOMContentLoaded', () => {
   
   function handleTouchMove(e) {
     if (!touchStartX || !touchStartY) return;
-    
     const touchX = e.touches[0].clientX;
     const touchY = e.touches[0].clientY;
     const diffX = touchX - lastTouchX;
     const diffY = touchY - touchStartY;
-    
-    // Horizontal swipe (left/right)
     if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 10) {
       e.preventDefault();
     }
-    
     lastTouchX = touchX;
   }
   
   function handleTouchEnd(e) {
     if (!touchStartX || !touchStartY) return;
-    
     const touchEndX = e.changedTouches[0].clientX;
     const touchEndY = e.changedTouches[0].clientY;
     const diffX = touchEndX - touchStartX;
     const diffY = touchEndY - touchStartY;
     
-    // Swipe down to close (more than 80px)
     if (diffY > 80 && Math.abs(diffY) > Math.abs(diffX)) {
       closeLightbox();
       return;
     }
-    
-    // Swipe left (next) or right (previous)
     if (Math.abs(diffX) > 80 && Math.abs(diffX) > Math.abs(diffY)) {
-      if (diffX < -50) {
-        navigate(1); // Swipe left - next
-      } else if (diffX > 50) {
-        navigate(-1); // Swipe right - previous
-      }
+      if (diffX < -50) navigate(1);
+      else if (diffX > 50) navigate(-1);
     }
-    
     touchStartX = 0;
     touchStartY = 0;
   }
   
-  // Keyboard navigation
   function handleKeydown(e) {
     if (!lightbox?.classList.contains('active')) return;
-    
-    if (e.key === 'ArrowLeft') {
-      navigate(-1);
-    } else if (e.key === 'ArrowRight') {
-      navigate(1);
-    } else if (e.key === 'Escape') {
-      closeLightbox();
-    }
+    if (e.key === 'ArrowLeft') navigate(-1);
+    else if (e.key === 'ArrowRight') navigate(1);
+    else if (e.key === 'Escape') closeLightbox();
   }
   
-  // Override openLightbox for mobile
   const originalOpenLightbox = window.openLightbox;
   window.openLightbox = function(id) {
     if (window.innerWidth > 768) {
-      // Desktop: use original function
       originalOpenLightbox(id);
       return;
     }
     
-    // Mobile: Instagram-style viewer
     const product = galleryProducts.find(p => p.id === id);
     if (!product) return;
     
-    // Get current filtered products
     const filtered = currentCategory === 'all'
       ? galleryProducts
       : galleryProducts.filter(p => p.category.toLowerCase().replace(/\s+/g, '-') === currentCategory);
@@ -546,70 +503,53 @@ document.addEventListener('DOMContentLoaded', () => {
     currentIndex = filteredProducts.findIndex(p => p.id === id);
     
     if (!lightbox) return;
-    
-    // Create top bar if needed
     createTopBar();
-    
-    // Update content
     updateLightboxContent();
     updatePosition();
     
-    // Show lightbox
     lightbox.classList.add('active');
     document.body.style.overflow = 'hidden';
     
-    // Add touch listeners
     if (isTouchDevice && lightboxContent) {
       lightboxContent.addEventListener('touchstart', handleTouchStart, { passive: true });
       lightboxContent.addEventListener('touchmove', handleTouchMove, { passive: false });
       lightboxContent.addEventListener('touchend', handleTouchEnd, { passive: true });
     }
-    
-    // Add keyboard listener
     document.addEventListener('keydown', handleKeydown);
-    
-    // Store reference to close function
     lightbox.dataset.originalOpener = 'instagram';
   };
   
-  // Override closeLightbox for mobile
   const originalCloseLightbox = window.closeLightbox;
   window.closeLightbox = function() {
     if (!lightbox) return;
     
-    // Check if this is the Instagram-style lightbox
     if (lightbox.dataset.originalOpener === 'instagram') {
       lightbox.classList.remove('active');
       document.body.style.overflow = '';
       
-      // Remove touch listeners
       if (lightboxContent) {
         lightboxContent.removeEventListener('touchstart', handleTouchStart);
         lightboxContent.removeEventListener('touchmove', handleTouchMove);
         lightboxContent.removeEventListener('touchend', handleTouchEnd);
       }
-      
-      // Remove keyboard listener
       document.removeEventListener('keydown', handleKeydown);
       
-      // Return focus to gallery
       const galleryGrid = document.getElementById('galleryGrid');
       if (galleryGrid && filteredProducts[currentIndex]) {
         const items = galleryGrid.querySelectorAll('.gallery-item');
-        if (items[currentIndex]) {
-          items[currentIndex].focus();
-        }
+        if (items[currentIndex]) items[currentIndex].focus();
       }
     } else {
-      // Desktop: use original function
       originalCloseLightbox();
     }
   };
   
-  // Initialize on DOM ready
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      // Top bar will be created when lightbox opens
-    });
+    document.addEventListener('DOMContentLoaded', () => {});
   }
 })();
+
+// ===== Initialize =====
+document.addEventListener('DOMContentLoaded', () => {
+    fetchProducts();
+});
