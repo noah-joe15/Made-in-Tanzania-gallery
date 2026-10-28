@@ -14,7 +14,7 @@ async function fetchProducts() {
         const response = await fetch(`${API_BASE_URL}/api/products`);
         if (!response.ok) throw new Error('Failed to fetch');
         galleryProducts = await response.json();
-        renderCategoryFilter(); // Generate category buttons dynamically
+        renderCategoryFilter();
         renderGallery();
     } catch (error) {
         console.error('Failed to load gallery:', error);
@@ -30,13 +30,9 @@ function renderCategoryFilter() {
     const filterContainer = document.getElementById('categoryFilter');
     if (!filterContainer) return;
 
-    // Extract unique categories from products
     const categories = [...new Set(galleryProducts.map(p => p.category).filter(Boolean))];
-    
-    // Sort categories alphabetically
     categories.sort();
 
-    // Build buttons
     let html = `<button class="filter-btn ${currentCategory === 'all' ? 'active' : ''}" data-category="all" data-en="All Products" data-sw="Bidhaa Zote">All Products</button>`;
     
     categories.forEach(cat => {
@@ -47,7 +43,6 @@ function renderCategoryFilter() {
 
     filterContainer.innerHTML = html;
 
-    // Re-attach event listeners
     filterContainer.querySelectorAll('.filter-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             filterContainer.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -68,7 +63,7 @@ function setLanguage(lang) {
     document.querySelectorAll('[data-en]').forEach(el => {
         el.textContent = el.dataset[lang];
     });
-    renderCategoryFilter(); // Re-render to update category names if needed
+    renderCategoryFilter();
     renderGallery();
 }
 
@@ -214,93 +209,6 @@ document.getElementById('lightbox')?.addEventListener('click', (e) => {
     if (e.target === e.currentTarget) closeLightbox();
 });
 
-// ===== Registration Modal =====
-function openRegistrationModal() {
-    const modal = document.getElementById('registrationModal');
-    if (modal) {
-        modal.classList.add('active');
-        document.body.style.overflow = 'hidden';
-    }
-}
-
-function closeRegistrationModal() {
-    const modal = document.getElementById('registrationModal');
-    if (modal) {
-        modal.classList.remove('active');
-        document.body.style.overflow = '';
-        const form = document.getElementById('registrationForm');
-        if (form) form.reset();
-        const status = document.getElementById('registrationStatus');
-        if (status) {
-            status.textContent = '';
-            status.className = 'form-status';
-        }
-    }
-}
-
-document.getElementById('registrationForm')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const submitBtn = document.getElementById('submitRegistrationBtn');
-    const statusMsg = document.getElementById('registrationStatus');
-    
-    if (!submitBtn || !statusMsg) return;
-
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Submitting...';
-    statusMsg.textContent = '';
-    statusMsg.className = 'form-status';
-
-    const payload = {
-        full_name: document.getElementById('fullName').value,
-        phone: document.getElementById('phone').value,
-        business_name: document.getElementById('businessName').value,
-        region: document.getElementById('region').value
-    };
-
-    try {
-        const response = await fetch(`${API_BASE_URL}/api/registrations`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.error || 'Failed to submit registration');
-        }
-
-        statusMsg.textContent = currentLanguage === 'sw' 
-            ? 'Maombi yametumwa kwa mafanikio! Tutawasiliana nawe hivi karibuni.' 
-            : 'Application submitted successfully! We will contact you soon.';
-        statusMsg.className = 'form-status success';
-        
-        document.getElementById('registrationForm').reset();
-        
-        setTimeout(() => {
-            closeRegistrationModal();
-        }, 2500);
-
-    } catch (error) {
-        console.error('Registration error:', error);
-        statusMsg.textContent = currentLanguage === 'sw' 
-            ? 'Hitilafu: ' + error.message 
-            : 'Error: ' + error.message;
-        statusMsg.className = 'form-status error';
-    } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = currentLanguage === 'sw' ? 'Tuma Maombi' : 'Submit Application';
-    }
-});
-
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-        closeRegistrationModal();
-        closeLightbox();
-    }
-});
-
 // ===== Mobile Pagination Logic =====
 (function() {
     const grid = document.getElementById('galleryGrid');
@@ -375,6 +283,13 @@ document.addEventListener('keydown', (e) => {
 
     gridObserver.observe(grid, { childList: true, subtree: true });
 })();
+
+// ===== Keyboard Navigation =====
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        closeLightbox();
+    }
+});
 
 // ===== Initialize =====
 document.addEventListener('DOMContentLoaded', () => {
