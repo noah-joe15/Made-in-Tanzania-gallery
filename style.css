@@ -1451,3 +1451,23 @@ img, video, svg {
     padding: 0; /* Remove padding that adds height */
   }
 }
+
+/* ===== Accessibility: Skip Link (append at end) ===== */
+.skip-link {
+    position: absolute;
+    top: -100px;
+    left: 16px;
+    background: var(--green-primary);
+    color: white;
+    padding: 12px 24px;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    z-index: 9999;
+    transition: top 0.3s ease;
+}
+
+.skip-link:focus {
+    top: 16px;
+    outline: 3px solid var(--blue-primary);
+    outline-offset: 2px;
+}
