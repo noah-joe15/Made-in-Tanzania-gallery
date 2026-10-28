@@ -10,5 +10,8 @@
     "@vercel/postgres": "^0.8.0",
     "@vercel/blob": "^0.22.3",
     "formidable": "^3.5.1"
+  },
+  "engines": {
+    "node": "18.x"
   }
 }
