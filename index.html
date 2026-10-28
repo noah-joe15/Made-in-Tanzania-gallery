@@ -12,19 +12,19 @@
 <body>
 
     <!-- Header / Navbar -->
-<header class="header">
-    <div class="header-container">
-        <div class="logo-section">
-            <div class="logo-box">
-                <img src="logo.png" alt="Tantrade Logo" class="logo-icon">
+    <header class="header">
+        <div class="header-container">
+            <div class="logo-section">
+                <div class="logo-box">
+                    <img src="logo.png" alt="Tantrade Logo" class="logo-icon">
+                </div>
+            </div>
+            <div class="lang-toggle">
+                <button class="lang-btn active" data-lang="en" onclick="setLanguage('en')">EN</button>
+                <button class="lang-btn" data-lang="sw" onclick="setLanguage('sw')">SW</button>
             </div>
         </div>
-        <div class="lang-toggle">
-            <button class="lang-btn active" data-lang="en" onclick="setLanguage('en')">EN</button>
-            <button class="lang-btn" data-lang="sw" onclick="setLanguage('sw')">SW</button>
-        </div>
-    </div>
-</header>
+    </header>
 
     <!-- Hero Section -->
     <section class="hero">
@@ -119,21 +119,18 @@
             <p class="section-subtitle" data-en="Browse products proudly manufactured in Tanzania" data-sw="Vinjari bidhaa zilizotengenezwa kwa fahari Tanzania">Browse products proudly manufactured in Tanzania</p>
         </div>
 
-        <!-- Category Filter -->
-        <div class="category-filter">
-            <button class="filter-btn active" data-category="all" data-en="All Products" data-sw="Bidhaa Zote">All Products</button>
-            <button class="filter-btn" data-category="textiles" data-en="Textiles & Fashion" data-sw="Nguo na Mitindo">Textiles & Fashion</button>
-            <button class="filter-btn" data-category="food" data-en="Food & Beverages" data-sw="Chakula na Vinywaji">Food & Beverages</button>
-            <button class="filter-btn" data-category="crafts" data-en="Handicrafts" data-sw="Vikonyo">Handicrafts</button>
-            <button class="filter-btn" data-category="agriculture" data-en="Agriculture" data-sw="Kilimo">Agriculture</button>
-            <button class="filter-btn" data-category="manufacturing" data-en="Manufacturing" data-sw="Uzalishaji">Manufacturing</button>
+        <!-- Category Filter (Dynamic - populated by JavaScript) -->
+        <div class="category-filter" id="categoryFilter">
+            <!-- Buttons will be generated automatically based on uploaded products -->
         </div>
 
         <!-- Gallery Grid -->
         <div class="gallery-grid" id="galleryGrid">
-<div class="gallery-pagination" id="galleryPagination"></div>
             <!-- Items populated by JavaScript -->
         </div>
+        
+        <!-- Pagination Dots (Mobile Only) -->
+        <div class="gallery-pagination" id="galleryPagination"></div>
 
         <div class="load-more-container">
             <button class="btn btn-primary" id="loadMoreBtn" data-en="Load More Products" data-sw="Pakia Bidhaa Zaidi">Load More Products</button>
@@ -146,10 +143,10 @@
             <div class="register-content">
                 <h2 class="section-title" data-en="Register Your Product" data-sw="Sajili Bidhaa Yako">Register Your Product</h2>
                 <p class="section-subtitle" data-en="Join the Made in Tanzania movement. Register your product to be featured in our gallery and reach more customers locally and internationally." data-sw="Jiunge na harakati za Bidhaa za Tanzania. Sajili bidhaa yako ionyeshwe katika galeri yetu na ufikie wateja zaidi ndani na nje ya nchi.">Join the Made in Tanzania movement. Register your product to be featured in our gallery and reach more customers locally and internationally.</p>
-                <a href="#" class="btn btn-primary" data-en="Register Now" data-sw="Jisajili Sasa">
+                <button onclick="openRegistrationModal()" class="btn btn-primary" data-en="Register Now" data-sw="Jisajili Sasa">
                     Register Now
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-                </a>
+                </button>
             </div>
             <div class="register-visual">
                 <div class="register-icon-large">
@@ -183,13 +180,11 @@
     <footer class="footer">
         <div class="footer-container">
             <div class="footer-brand">
-               <div class="logo-box">
-    <img src="logo.png" alt="Tantrade Logo" class="logo-icon">
-</div>
-        <span class="logo-title">TANTRADE</span>
-        <span class="logo-subtitle">Tanzania Trade Development Authority</span>
-    </div>
-</div>
+                <div class="logo-box">
+                    <img src="logo.png" alt="Tantrade Logo" class="logo-icon">
+                </div>
+                <span class="logo-title">TANTRADE</span>
+                <span class="logo-subtitle">Tanzania Trade Development Authority</span>
                 <p class="footer-desc" data-en="Promoting Tanzanian trade and business development through showcasing local products." data-sw="Kukuza biashara na maendeleo ya Tanzania kupitia kuonyesha bidhaa za ndani.">Promoting Tanzanian trade and business development through showcasing local products.</p>
             </div>
             <div class="footer-links">
@@ -208,6 +203,34 @@
             <p>&copy; 2026 Tantrade - Tanzania Trade Development Authority. <span data-en="All rights reserved." data-sw="Haki zote zimehifadhiwa.">All rights reserved.</span></p>
         </div>
     </footer>
+
+    <!-- Registration Modal -->
+    <div class="modal" id="registrationModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeRegistrationModal()">&times;</button>
+            <h2 data-en="Register Your Product" data-sw="Sajili Bidhaa Yako">Register Your Product</h2>
+            <form id="registrationForm">
+                <div class="form-group">
+                    <label for="fullName" data-en="Full Name" data-sw="Jina Kamili">Full Name</label>
+                    <input type="text" id="fullName" required class="clay-input">
+                </div>
+                <div class="form-group">
+                    <label for="phone" data-en="Phone Number" data-sw="Nambari ya Simu">Phone Number</label>
+                    <input type="tel" id="phone" required class="clay-input">
+                </div>
+                <div class="form-group">
+                    <label for="businessName" data-en="Business Name" data-sw="Jina la Biashara">Business Name</label>
+                    <input type="text" id="businessName" required class="clay-input">
+                </div>
+                <div class="form-group">
+                    <label for="region" data-en="Region" data-sw="Mkoa">Region</label>
+                    <input type="text" id="region" required class="clay-input">
+                </div>
+                <button type="submit" class="btn btn-primary" id="submitRegistrationBtn" data-en="Submit Application" data-sw="Tuma Maombi">Submit Application</button>
+                <p id="registrationStatus" class="form-status"></p>
+            </form>
+        </div>
+    </div>
 
     <!-- Lightbox Modal -->
     <div class="lightbox" id="lightbox">
