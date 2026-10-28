@@ -59,23 +59,37 @@ function renderGallery() {
         let mediaContent = '';
         
         if (isYoutube) {
-            mediaContent = `<div class="gallery-item-placeholder" style="background: linear-gradient(135deg, #FFF3EB, #F3EEF9);">
-                <svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-primary)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:48px;height:48px;"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
-            </div>`;
+            // YouTube thumbnail or placeholder
+            const videoId = product.media_url.split('v=')[1]?.split('&')[0] || product.media_url.split('/').pop();
+            mediaContent = `
+                <div style="position:relative;width:100%;height:100%;background:#000;">
+                    <img src="https://img.youtube.com/vi/${videoId}/hqdefault.jpg" alt="${product.title_en}" style="width:100%;height:100%;object-fit:cover;opacity:0.8;">
+                    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.8);border-radius:50%;padding:12px;">
+                        <svg viewBox="0 0 24 24" fill="white" stroke="none" style="width:24px;height:24px;"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    </div>
+                </div>
+            `;
         } else if (isVideo) {
-            mediaContent = `<video src="${product.media_url}" muted loop playsinline onmouseover="this.play()" onmouseout="this.pause()" style="width:100%;height:100%;object-fit:cover;"></video>`;
+            // Uploaded video with hover-to-play
+            mediaContent = `<video src="${product.media_url}" muted loop playsinline onmouseover="this.play()" onmouseout="this.pause()" style="width:100%;height:100%;object-fit:cover;background:#000;"></video>`;
+        } else if (product.media_url) {
+            // Uploaded image
+            mediaContent = `<img src="${product.media_url}" alt="${product.title_en}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='<div class=\\'gallery-item-placeholder\\' style=\\'background:linear-gradient(135deg,#E8F5EE,#E8EFF8);display:flex;align-items:center;justify-content:center;\\'><svg viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'var(--green-primary)\\' stroke-width=\\'1.5\\' style=\\'width:48px;height:48px;\\'><rect x=\\'3\\' y=\\'3\\' width=\\'18\\' height=\\'18\\' rx=\\'2\\'/><circle cx=\\'8.5\\' cy=\\'8.5\\' r=\\'1.5\\'/><polyline points=\\'21 15 16 10 5 21\\'/></svg></div>'">`;
         } else {
-            mediaContent = `<img src="${product.media_url}" alt="${product.title_en}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='<div class=\\'gallery-item-placeholder\\'><svg viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'currentColor\\' stroke-width=\\'1.5\\'><rect x=\\'3\\' y=\\'3\\' width=\\'18\\' height=\\'18\\' rx=\\'2\\'/><circle cx=\\'8.5\\' cy=\\'8.5\\' r=\\'1.5\\'/><polyline points=\\'21 15 16 10 5 21\\'/></svg></div>'">`;
+            // Fallback placeholder
+            mediaContent = `<div class="gallery-item-placeholder" style="background:linear-gradient(135deg,#E8F5EE,#E8EFF8);display:flex;align-items:center;justify-content:center;height:100%;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="var(--green-primary)" stroke-width="1.5" style="width:48px;height:48px;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            </div>`;
         }
 
         return `
-        <div class="gallery-item" onclick="openLightbox(${product.id})" data-category="${product.category}">
-            <div class="gallery-item-image">
+        <div class="gallery-item" onclick="openLightbox(${product.id})" data-category="${product.category}" style="cursor:pointer;transition:transform 0.3s ease,box-shadow 0.3s ease;" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='var(--shadow-lg)';" onmouseout="this.style.transform='';this.style.boxShadow='';">
+            <div class="gallery-item-image" style="width:100%;height:220px;overflow:hidden;border-radius:12px 12px 0 0;">
                 ${mediaContent}
             </div>
-            <div class="gallery-item-info">
-                <div class="gallery-item-title">${currentLanguage === 'sw' ? product.title_sw : product.title_en}</div>
-                <div class="gallery-item-category">${currentLanguage === 'sw' ? getCategorySw(product.category) : product.category}</div>
+            <div class="gallery-item-info" style="padding:16px;">
+                <div class="gallery-item-title" style="font-size:15px;font-weight:700;color:var(--text-dark);margin-bottom:4px;">${currentLanguage === 'sw' ? product.title_sw : product.title_en}</div>
+                <div class="gallery-item-category" style="font-size:12px;font-weight:600;color:var(--green-primary);text-transform:uppercase;letter-spacing:0.5px;background:var(--green-light);display:inline-block;padding:3px 10px;border-radius:20px;">${currentLanguage === 'sw' ? getCategorySw(product.category) : product.category}</div>
             </div>
         </div>
         `;
@@ -121,28 +135,39 @@ function openLightbox(id) {
     if (!product) return;
 
     const lightbox = document.getElementById('lightbox');
+    if (!lightbox) return;
+    
     document.getElementById('lightboxTitle').textContent = currentLanguage === 'sw' ? product.title_sw : product.title_en;
     document.getElementById('lightboxCategory').textContent = currentLanguage === 'sw' ? getCategorySw(product.category) : product.category;
     document.getElementById('lightboxDescription').textContent = currentLanguage === 'sw' ? product.description_sw : product.description_en;
 
     const content = document.querySelector('.lightbox-content');
-    let mediaContainer = content.querySelector('.lightbox-media-container');
+    if (!content) return;
     
-    if (!mediaContainer) {
-        mediaContainer = document.createElement('div');
-        mediaContainer.className = 'lightbox-media-container';
-        mediaContainer.style.cssText = 'width:100%;min-height:350px;display:flex;align-items:center;justify-content:center;background:var(--bg-light);';
-        content.insertBefore(mediaContainer, content.firstChild);
-    }
-
-    if (product.media_type === 'youtube') {
+    // Remove existing media container if any
+    let mediaContainer = content.querySelector('.lightbox-media-container');
+    if (mediaContainer) mediaContainer.remove();
+    
+    // Create new media container
+    mediaContainer = document.createElement('div');
+    mediaContainer.className = 'lightbox-media-container';
+    mediaContainer.style.cssText = 'width:100%;min-height:350px;display:flex;align-items:center;justify-content:center;background:var(--bg-light);border-radius:12px 12px 0 0;overflow:hidden;';
+    
+    const isYoutube = product.media_type === 'youtube';
+    const isVideo = product.media_type === 'video';
+    
+    if (isYoutube) {
         const videoId = product.media_url.split('v=')[1]?.split('&')[0] || product.media_url.split('/').pop();
-        mediaContainer.innerHTML = `<iframe width="100%" height="350" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen style="border-radius: 12px 12px 0 0;"></iframe>`;
-    } else if (product.media_type === 'video') {
-        mediaContainer.innerHTML = `<video src="${product.media_url}" controls autoplay style="width:100%;height:350px;border-radius: 12px 12px 0 0;"></video>`;
+        mediaContainer.innerHTML = `<iframe width="100%" height="450" src="https://www.youtube.com/embed/${videoId}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="border-radius:12px 12px 0 0;"></iframe>`;
+    } else if (isVideo) {
+        mediaContainer.innerHTML = `<video src="${product.media_url}" controls autoplay style="width:100%;height:450px;border-radius:12px 12px 0 0;background:#000;"></video>`;
+    } else if (product.media_url) {
+        mediaContainer.innerHTML = `<img src="${product.media_url}" alt="${product.title_en}" style="width:100%;height:450px;object-fit:cover;border-radius:12px 12px 0 0;" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\\'padding:40px;text-align:center;color:var(--text-light);\\'>Failed to load image</div>'">`;
     } else {
-        mediaContainer.innerHTML = `<img src="${product.media_url}" style="width:100%;height:350px;object-fit:cover;border-radius: 12px 12px 0 0;" onerror="this.style.display='none'">`;
+        mediaContainer.innerHTML = '<div style="padding:40px;text-align:center;color:var(--text-light);">No media available</div>';
     }
+    
+    content.insertBefore(mediaContainer, content.firstChild);
 
     lightbox.classList.add('active');
     document.body.style.overflow = 'hidden';
@@ -150,10 +175,21 @@ function openLightbox(id) {
 
 function closeLightbox() {
     const lightbox = document.getElementById('lightbox');
+    if (!lightbox) return;
+    
     lightbox.classList.remove('active');
     document.body.style.overflow = '';
+    
     const mediaContainer = document.querySelector('.lightbox-media-container');
-    if (mediaContainer) mediaContainer.remove();
+    if (mediaContainer) {
+        // Stop any playing videos
+        const video = mediaContainer.querySelector('video');
+        if (video) {
+            video.pause();
+            video.src = '';
+        }
+        mediaContainer.remove();
+    }
 }
 
 document.getElementById('lightbox')?.addEventListener('click', (e) => {
