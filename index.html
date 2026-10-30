@@ -19,8 +19,8 @@
     <meta name="twitter:image" content="https://tantrade.go.tz/og-image.jpg">
     <meta name="theme-color" content="#0A7E4B">
     
-    <!-- Icons -->
-    <link rel="icon" href="/favicon.ico" sizes="any">
+    <!-- Icons - Using emoji as temporary favicon to prevent 404 -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇹🇿</text></svg>">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     
     <!-- Performance: Fonts -->
@@ -50,6 +50,30 @@
       }
     }
     </script>
+
+    <style>
+        /* Override lightbox to show FULL images without cropping */
+        .lightbox-media-container img,
+        .lightbox-media-container video,
+        .lightbox-media-container iframe {
+            object-fit: contain !important;
+            max-height: 85vh !important;
+            width: 100% !important;
+            background: #000;
+        }
+        
+        /* Make lightbox content scrollable for long descriptions */
+        .lightbox-content {
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        /* Ensure caption is fully visible */
+        .lightbox-caption {
+            padding: 24px;
+            background: var(--bg-white);
+        }
+    </style>
 </head>
 <body>
     <noscript>
