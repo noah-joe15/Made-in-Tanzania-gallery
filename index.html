@@ -55,7 +55,7 @@
     <noscript>
         <div style="padding: 20px; text-align: center; background: #fee2e2; color: #991b1b; font-family: sans-serif;">
             Please enable JavaScript to view the gallery and use all features of this site.
-        </div.
+        </div>
     </noscript>
 
     <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -64,14 +64,14 @@
     <header class="header">
         <div class="header-container">
             <div class="logo-section">
-    <div class="logo-box">
-        <img src="logo.png" alt="Tantrade Logo" class="logo-icon">
-    </div>
-    <!-- New Made in Tanzania Logo -->
-    <div class="logo-box secondary-logo-box">
-        <img src="mit-logo.png" alt="Made in Tanzania Logo" class="logo-icon secondary-logo">
-    </div>
-</div>
+                <div class="logo-box">
+                    <img src="logo.png" alt="Tantrade Logo" class="logo-icon" width="120" height="120" fetchpriority="high">
+                </div>
+                <!-- New Made in Tanzania Logo -->
+                <div class="logo-box secondary-logo-box">
+                    <img src="mit-logo.png" alt="Made in Tanzania Logo" class="logo-icon secondary-logo">
+                </div>
+            </div>
             <div class="lang-toggle">
                 <button type="button" class="lang-btn active" data-lang="en" onclick="setLanguage('en')" aria-label="Switch to English">EN</button>
                 <button type="button" class="lang-btn" data-lang="sw" onclick="setLanguage('sw')" aria-label="Switch to Swahili">SW</button>
@@ -169,7 +169,7 @@
             <div class="section-header">
                 <h2 id="gallery-title" class="section-title" data-en="Made in Tanzania Gallery" data-sw="Galeri ya Bidhaa za Tanzania">Made in Tanzania Gallery</h2>
                 <p class="section-subtitle" data-en="Browse products proudly manufactured in Tanzania" data-sw="Vinjari bidhaa zilizotengenezwa kwa fahari Tanzania">Browse products proudly manufactured in Tanzania</p>
-.            </div>
+            </div>
 
             <!-- Category Filter (Dynamic - populated by JavaScript) -->
             <div class="category-filter" id="categoryFilter" role="tablist" aria-label="Product categories">
@@ -258,20 +258,20 @@
     </footer>
 
     <!-- Lightbox Modal -->
-<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Product viewer">
-    <button class="lightbox-close" id="lightboxClose" aria-label="Close viewer">&times;</button>
-    <div class="lightbox-content">
-        <!-- Media container (dynamically populated) -->
-        <div class="lightbox-media-container"></div>
-        
-        <!-- Caption area -->
-        <div class="lightbox-caption">
-            <h3 class="lightbox-title" id="lightboxTitle"></h3>
-            <span class="lightbox-category" id="lightboxCategory"></span>
-            <p class="lightbox-description" id="lightboxDescription"></p>
+    <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Product viewer">
+        <button type="button" class="lightbox-close" id="lightboxClose" aria-label="Close viewer">&times;</button>
+        <div class="lightbox-content">
+            <!-- Media container (dynamically populated) -->
+            <div class="lightbox-media-container"></div>
+            
+            <!-- Caption area -->
+            <div class="lightbox-caption">
+                <h3 class="lightbox-title" id="lightboxTitle"></h3>
+                <span class="lightbox-category" id="lightboxCategory"></span>
+                <p class="lightbox-description" id="lightboxDescription"></p>
+            </div>
         </div>
     </div>
-</div>
 
     <script src="script.js"></script>
 </body>
