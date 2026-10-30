@@ -4,7 +4,6 @@
 const API_BASE_URL = '';
 
 // ===== Image Optimization Utility =====
-// Automatically optimizes images using Vercel's built-in service
 function optimizeImage(imageUrl, width = 800, quality = 75) {
   if (!imageUrl || imageUrl.includes('youtube') || imageUrl.includes('ytimg')) {
     return imageUrl;
@@ -112,7 +111,6 @@ function renderGallery() {
         } else if (isVideo) {
             mediaContent = `<video src="${product.media_url}" muted loop playsinline onmouseover="this.play()" onmouseout="this.pause()" style="width:100%;height:100%;object-fit:cover;background:#000;"></video>`;
         } else if (product.media_url) {
-            // OPTIMIZED: Serves a 600px wide, 75% quality WebP/AVIF image
             const optimizedUrl = optimizeImage(product.media_url, 600, 75);
             mediaContent = `<img src="${optimizedUrl}" alt="${product.title_en}" style="width:100%;height:100%;object-fit:cover;" loading="lazy" decoding="async" onerror="this.parentElement.innerHTML='<div class=\\'gallery-item-placeholder\\' style=\\'background:linear-gradient(135deg,#E8F5EE,#E8EFF8);display:flex;align-items:center;justify-content:center;\\'><svg viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'var(--green-primary)\\' stroke-width=\\'1.5\\' style=\\'width:48px;height:48px;\\'><rect x=\\'3\\' y=\\'3\\' width=\\'18\\' height=\\'18\\' rx=\\'2\\'/><circle cx=\\'8.5\\' cy=\\'8.5\\' r=\\'1.5\\'/><polyline points=\\'21 15 16 10 5 21\\'/></svg></div>'">`;
         } else {
@@ -165,11 +163,16 @@ function openLightbox(id) {
     const lightbox = document.getElementById('lightbox');
     if (!lightbox) return;
     
-    document.getElementById('lightboxTitle').textContent = currentLanguage === 'sw' ? product.title_sw : product.title_en;
-    document.getElementById('lightboxCategory').textContent = currentLanguage === 'sw' ? getCategorySw(product.category) : product.category;
-    document.getElementById('lightboxDescription').textContent = currentLanguage === 'sw' ? product.description_sw : product.description_en;
+    // FIX: Safe element selection to prevent null errors and crashes
+    const titleEl = document.getElementById('lightboxTitle') || lightbox.querySelector('.lightbox-title');
+    const categoryEl = document.getElementById('lightboxCategory') || lightbox.querySelector('.lightbox-category');
+    const descEl = document.getElementById('lightboxDescription') || lightbox.querySelector('.lightbox-description');
 
-    const content = document.querySelector('.lightbox-content');
+    if (titleEl) titleEl.textContent = currentLanguage === 'sw' ? product.title_sw : product.title_en;
+    if (categoryEl) categoryEl.textContent = currentLanguage === 'sw' ? getCategorySw(product.category) : product.category;
+    if (descEl) descEl.textContent = currentLanguage === 'sw' ? product.description_sw : product.description_en;
+
+    const content = lightbox.querySelector('.lightbox-content');
     if (!content) return;
     
     let mediaContainer = content.querySelector('.lightbox-media-container');
@@ -188,7 +191,6 @@ function openLightbox(id) {
     } else if (isVideo) {
         mediaContainer.innerHTML = `<video src="${product.media_url}" controls autoplay style="width:100%;height:450px;border-radius:12px 12px 0 0;background:#000;"></video>`;
     } else if (product.media_url) {
-        // OPTIMIZED: Serves a 1200px wide, 80% quality image for lightbox
         const optimizedUrl = optimizeImage(product.media_url, 1200, 80);
         mediaContainer.innerHTML = `<img src="${optimizedUrl}" alt="${product.title_en}" style="width:100%;height:450px;object-fit:cover;border-radius:12px 12px 0 0;" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\\'padding:40px;text-align:center;color:var(--text-light);\\'>Failed to load image</div>'">`;
     } else {
@@ -433,7 +435,6 @@ document.addEventListener('keydown', (e) => {
     } else if (isVideo) {
       mediaContainer.innerHTML = `<video src="${product.media_url}" controls autoplay style="border-radius: 8px; max-height: 70dvh;"></video>`;
     } else if (product.media_url) {
-      // OPTIMIZED: Serves a 1200px wide, 80% quality image for mobile lightbox
       const optimizedUrl = optimizeImage(product.media_url, 1200, 80);
       mediaContainer.innerHTML = `<img src="${optimizedUrl}" alt="${product.title_en}" style="border-radius: 8px;" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'gallery-item-placeholder\\'><svg viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'currentColor\\' stroke-width=\\'1.5\\' style=\\'width:64px;height:64px;opacity:0.5;\\'><rect x=\\'3\\' y=\\'3\\' width=\\'18\\' height=\\'18\\' rx=\\'2\\'/><circle cx=\\'8.5\\' cy=\\'8.5\\' r=\\'1.5\\'/><polyline points=\\'21 15 16 10 5 21\\'/></svg></div>'">`;
     } else {
